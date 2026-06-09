@@ -1,0 +1,429 @@
+{
+  "appName": "MailDrop",
+  "tagline": "Ücretsiz, açık kaynak toplu mail uygulaması",
+  "version": "v{version} · Açık kaynak",
+  "openSource": "Açık kaynak",
+
+  "common": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "remove": "Sil",
+    "add": "Ekle",
+    "create": "Oluştur",
+    "close": "Kapat",
+    "back": "Geri",
+    "next": "İleri",
+    "continue": "Devam et",
+    "finish": "Bitti",
+    "loading": "Yükleniyor…",
+    "search": "Ara",
+    "yes": "Evet",
+    "no": "Hayır",
+    "optional": "opsiyonel",
+    "required": "zorunlu",
+    "default": "varsayılan",
+    "preview": "Önizle",
+    "tryAgain": "Yeniden dene",
+    "help": "Yardım",
+    "maybeLater": "Belki sonra",
+    "noContent": "—",
+    "test": "Test Et"
+  },
+
+  "nav": {
+    "home": "Ana Sayfa",
+    "contacts": "Kişiler",
+    "templates": "Şablonlar",
+    "sending": "Gönderim",
+    "reports": "Raporlar",
+    "settings": "Ayarlar"
+  },
+
+  "home": {
+    "welcome": "Hoş geldiniz",
+    "subtitle": "5 dakikada ilk toplu mailinizi gönderin. Aşağıdaki adımları sırasıyla takip edin.",
+    "step1Title": "Hesabınızı bağlayın",
+    "step1Desc": "Gmail, Outlook veya kendi SMTP hesabınızı kurun.",
+    "step1Cta": "Ayarlara git",
+    "step2Title": "Kişi listenizi yükleyin",
+    "step2Desc": "Excel veya CSV dosyanızı sürükleyip bırakın.",
+    "step2Cta": "Kişilere git",
+    "step3Title": "İlk şablonunuzu yazın",
+    "step3Desc": "{Ad} gibi değişkenlerle kişiselleştirin.",
+    "step3Cta": "Şablonlara git",
+    "stepLabel": "ADIM {n}",
+    "stepDone": "TAMAM",
+    "quickSend": "Hızlı gönderim",
+    "quickSendReady": "Hazırsınız. Buradan yeni bir gönderim başlatabilirsiniz.",
+    "quickSendNotReady": "Önce 3 adımı tamamlayın, sonra buradan gönderim başlatabilirsiniz.",
+    "newCampaign": "Yeni Gönderim Başlat",
+    "totalContacts": "Toplam Kişi",
+    "savedTemplates": "Kayıtlı Şablon",
+    "lastCampaign": "Son Kampanya",
+    "noCampaign": "Henüz yok"
+  },
+
+  "contacts": {
+    "title": "Tüm Kişiler",
+    "count": "{n} kişi",
+    "importExcel": "Excel'den içe aktar",
+    "exportExcel": "Excel'e aktar",
+    "addContact": "Kişi ekle",
+    "searchPlaceholder": "İsim, e-posta veya firma ile ara…",
+    "removeSelected": "{n} kişiyi sil",
+    "emptyTitle": "Henüz hiç kişiniz yok.",
+    "emptyMatching": "Aramanızla eşleşen kişi yok.",
+    "emptyDesc": "Excel dosyanızı içe aktarın veya manuel olarak ekleyin.",
+    "emptyMatchingDesc": "Farklı bir arama deneyin.",
+    "columns": {
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "company": "Firma",
+      "group": "Grup"
+    },
+    "selectAll": "Tümünü seç",
+    "confirmRemoveOne": "\"{email}\" adresini silmek istediğinize emin misiniz?",
+    "confirmRemoveMany": "{n} kişiyi silmek istediğinize emin misiniz?",
+    "exportSaved": "Excel dosyası kaydedildi.",
+    "exportFileNameAll": "kisiler.xlsx",
+    "exportFileNameGroup": "kisiler-{group}.xlsx",
+    "form": {
+      "titleNew": "Yeni kişi ekle",
+      "titleEdit": "Kişiyi düzenle",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "company": "Firma (opsiyonel)",
+      "group": "Grup (opsiyonel)",
+      "noGroup": "— Grupsuz —",
+      "invalidEmail": "Geçerli bir e-posta adresi girin.",
+      "duplicateEmail": "Bu e-posta adresi zaten kayıtlı.",
+      "submitNew": "Kişiyi ekle",
+      "submitEdit": "Değişiklikleri kaydet"
+    },
+    "groups": {
+      "header": "Gruplar",
+      "all": "Tüm kişiler",
+      "addGroup": "Grup ekle",
+      "namePlaceholder": "Grup adı",
+      "removeConfirm": "\"{name}\" grubunu silmek istediğinize emin misiniz? Kişiler silinmez.",
+      "removeTitle": "Grubu sil"
+    },
+    "import": {
+      "title": "Excel'den içe aktar",
+      "subtitle": "Excel veya CSV dosyanızı seçin, sütunları eşleştirin, içe aktarın.",
+      "supportedFiles": ".xlsx, .xls veya .csv dosyalarını destekler.",
+      "pickFile": "Dosya seç",
+      "fileReadError": "Dosya boş veya okunamadı.",
+      "fieldFirstName": "Ad",
+      "fieldLastName": "Soyad",
+      "fieldEmail": "E-posta (zorunlu)",
+      "fieldCompany": "Firma",
+      "preview": "Önizleme (ilk {n} satır)",
+      "noneSelected": "— Yok —",
+      "customFieldsNote": "Eşleştirilmemiş sütunlar otomatik olarak özel alan ({{Sütun}}) şeklinde saklanır.",
+      "emailRequired": "E-posta sütununu eşleştirmelisiniz.",
+      "doImport": "İçe aktar",
+      "doneTitle": "İçe aktarım tamamlandı",
+      "doneInserted": "{n} kişi başarıyla eklendi.",
+      "doneDuplicates": "{n} e-posta zaten kayıtlı olduğu için atlandı.",
+      "skippedAddresses": "Atlanan adresler:",
+      "andMore": "… ve {n} tane daha"
+    }
+  },
+
+  "templates": {
+    "title": "Şablonlar",
+    "selectPrompt": "Bir şablon seçin",
+    "selectDesc": "Sol panelden bir şablon seçin veya yeni bir tane oluşturun. Şablonlar değişkenler içerebilir: {example1}, {example2} gibi.",
+    "newTemplate": "Yeni şablon",
+    "empty": "Henüz şablon yok.",
+    "removeConfirm": "\"{name}\" şablonunu silmek istediğinize emin misiniz?",
+    "noSubject": "(konu yok)",
+    "removeTitle": "Şablonu sil",
+    "editor": {
+      "name": "Şablon adı",
+      "namePlaceholder": "Örn. Tedarikçi Bakiye Hatırlatma",
+      "subject": "Konu",
+      "subjectPlaceholder": "Örn. Merhaba {Ad}, bakiye hatırlatması",
+      "placeholder": "Mailinizi buraya yazın. Değişkenler için sağ paneli kullanın.",
+      "nameRequired": "Şablon adı boş olamaz.",
+      "subjectRequired": "Konu satırı boş olamaz.",
+      "bodyRequired": "Mail gövdesi boş olamaz.",
+      "saved": "Şablon kaydedildi.",
+      "saveTemplate": "Şablonu kaydet",
+      "addAttachment": "Ek dosya ekle",
+      "changeAttachment": "Eki değiştir",
+      "removeAttachment": "Eki kaldır",
+      "importHtml": "HTML içe aktar",
+      "linkPrompt": "Bağlantı adresi (boş bırakırsanız kaldırılır):",
+      "toolbar": {
+        "undo": "Geri al",
+        "redo": "İleri al",
+        "heading2": "Başlık 2",
+        "heading3": "Başlık 3",
+        "bold": "Kalın",
+        "italic": "İtalik",
+        "underline": "Altı çizili",
+        "strike": "Üstü çizili",
+        "bulletList": "Madde işaretli liste",
+        "orderedList": "Numaralı liste",
+        "blockquote": "Alıntı",
+        "link": "Bağlantı ekle"
+      }
+    },
+    "variables": {
+      "header": "Değişkenler",
+      "hint": "Tıklayarak konuya veya gövdeye ekleyin. Gönderim sırasında kişi bilgisiyle dolar.",
+      "detected": "Tespit edilen",
+      "used": "Şablonda kullanılıyor",
+      "addTooltip": "Tıklayıp ekle"
+    },
+    "preview": {
+      "title": "Şablon önizleme",
+      "subtitle": "Seçtiğiniz kişi verisi ile şablonun nasıl görüneceğini görün.",
+      "noContacts": "Önizleme için en az bir kişiye ihtiyacınız var. Önce Kişiler sekmesinden ekleyin.",
+      "testContact": "Test kişisi",
+      "subjectLabel": "Konu",
+      "toLabel": "Kime",
+      "empty": "(boş)",
+      "draftNote": "Henüz kaydedilmemiş bir şablonun önizlemesi gösteriliyor."
+    }
+  },
+
+  "sending": {
+    "title": "Yeni Gönderim",
+    "subtitle": "4 adımda toplu mail gönderimi yapın.",
+    "steps": {
+      "contacts": "Kişiler",
+      "template": "Şablon",
+      "settings": "Ayarlar",
+      "confirm": "Onay",
+      "running": "Gönderim"
+    },
+    "noSmtpTitle": "Önce bir e-posta hesabı bağlayın",
+    "noSmtpDesc": "Toplu mail göndermek için Ayarlar sekmesinden Gmail, Outlook veya kendi SMTP hesabınızı bağlamanız gerekir.",
+    "noTemplateTitle": "Önce bir şablon oluşturun",
+    "noTemplateDesc": "Toplu mail göndermek için Şablonlar sekmesinden en az bir şablon oluşturmanız gerekir.",
+    "nextTemplate": "Şablon seçimine geç",
+    "nextSettings": "Ayarlara geç",
+    "nextConfirm": "Onaya geç",
+    "noTemplatesYet": "Henüz hiç şablon yok. Şablonlar sekmesinden bir tane oluşturun.",
+    "contactPicker": {
+      "all": "Tümü",
+      "searchPlaceholder": "Listede ara…",
+      "addVisible": "Görünenleri ekle",
+      "clearSelection": "Seçimi temizle",
+      "noMatch": "Eşleşen kişi yok.",
+      "selectedCount": "{n} kişi seçildi"
+    },
+    "settings": {
+      "cardTitle": "Gönderim ayarları",
+      "campaignName": "Kampanya adı (opsiyonel)",
+      "fromAccount": "Gönderen hesap",
+      "rate": "Saniyede mail sayısı",
+      "rateOptions": {
+        "half": "0.5 (her 2 saniyede 1 — en güvenli)",
+        "one": "1 mail / saniye (önerilen)",
+        "two": "2 mail / saniye",
+        "five": "5 mail / saniye (Gmail limiti riskli)"
+      },
+      "rateHint": "Yavaş gönderim, spam filtrelerine takılma riskini azaltır.",
+      "schedule": "Zamanla (opsiyonel)",
+      "scheduleHint": "Boş bırakırsanız hemen başlar. Uygulama kapanırsa zamanlanmış gönderim çalışmaz."
+    },
+    "confirm": {
+      "cardTitle": "Gönderim özeti",
+      "recipientCount": "Alıcı sayısı",
+      "recipientCountValue": "{n} kişi",
+      "templateLabel": "Şablon",
+      "subjectLabel": "Konu",
+      "fromLabel": "Gönderen",
+      "rateLabel": "Hız",
+      "rateValue": "{n} mail / saniye",
+      "estimatedDuration": "Tahmini süre",
+      "minutes": "{n} dakika",
+      "scheduleLabel": "Zamanlama",
+      "doubleCheckTitle": "Lütfen bir kez daha kontrol edin",
+      "doubleCheckBody": "{count} kişiye {from} adresinden mail göndereceksiniz. Başladıktan sonra duraklatabilir veya iptal edebilirsiniz, ama gönderilmiş mailler geri çağrılamaz.",
+      "errorTitle": "Hata",
+      "sendNow": "Şimdi gönder",
+      "schedule": "Zamanla"
+    },
+    "console": {
+      "pending": "Beklemede",
+      "running": "Gönderim devam ediyor…",
+      "paused": "Duraklatıldı",
+      "completed": "Tamamlandı",
+      "cancelled": "İptal edildi",
+      "failed": "Hatayla durdu",
+      "progress": "İlerleme",
+      "success": "Başarılı",
+      "failure": "Başarısız",
+      "remaining": "Kalan",
+      "sending": "Gönderiliyor: {email}",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "cancel": "İptal et",
+      "retryFailed": "Başarısızları tekrar dene"
+    }
+  },
+
+  "reports": {
+    "title": "Raporlar",
+    "summary": "{n} kampanya geçmişi.",
+    "empty": "Henüz bir kampanya yok",
+    "emptyDesc": "Gönderim sekmesinden ilk kampanyanızı başlatın.",
+    "historyTitle": "Kampanya geçmişi",
+    "columns": {
+      "campaign": "Kampanya",
+      "date": "Tarih",
+      "total": "Toplam",
+      "success": "Başarılı",
+      "failure": "Başarısız",
+      "status": "Durum"
+    },
+    "removeConfirm": "\"{name}\" kampanyasını silmek istediğinize emin misiniz? Detay logları da silinecek.",
+    "status": {
+      "completed": "Tamamlandı",
+      "running": "Çalışıyor",
+      "paused": "Duraklatıldı",
+      "pending": "Beklemede",
+      "failed": "Hatalı",
+      "cancelled": "İptal"
+    },
+    "detail": {
+      "back": "Listeye dön",
+      "totalLabel": "Toplam",
+      "successLabel": "Başarılı",
+      "failureLabel": "Başarısız",
+      "successRate": "Başarı oranı",
+      "startedAt": "Başlangıç",
+      "finishedAt": "Bitiş",
+      "detailsTitle": "Gönderim detayı",
+      "filterAll": "Tümü ({n})",
+      "filterSuccess": "Başarılı ({n})",
+      "filterFailure": "Başarısız ({n})",
+      "noRecords": "Kayıt yok.",
+      "colEmail": "E-posta",
+      "colError": "Hata mesajı",
+      "colTime": "Zaman",
+      "exportSaved": "Rapor kaydedildi:\n{path}"
+    }
+  },
+
+  "settings": {
+    "title": "Ayarlar",
+    "subtitle": "SMTP hesaplarınızı buradan yönetin. Şifreler bilgisayarınızda şifrelenerek saklanır.",
+    "language": {
+      "cardTitle": "Dil",
+      "label": "Arayüz dili",
+      "hint": "Değişiklik anında uygulanır."
+    },
+    "promotions": {
+      "cardTitle": "Tanıtım önerileri",
+      "label": "Bilgetek tanıtım önerilerini göster",
+      "hint": "Uygulama kapanırken zaman zaman Bilgetek ekosistemindeki diğer ürünler için tanıtım gösterilir. İstemiyorsanız buradan kapatın."
+    },
+    "accountsCardTitle": "Bağlı hesaplar",
+    "noAccountsYet": "Henüz bir e-posta hesabı eklenmedi.",
+    "accountsCount": "{n} hesap bağlı.",
+    "newAccount": "Yeni hesap",
+    "emptyHint": "Toplu mail gönderebilmek için önce bir e-posta hesabı bağlayın.",
+    "formCardTitle": "Yeni hesap ekle",
+    "formCardDesc": "Gmail, Outlook ve Yahoo için ayarlar otomatik gelir. Diğerleri için \"Özel SMTP\" seçin.",
+    "editTitle": "Hesabı düzenle",
+    "editDesc": "Şifreyi değiştirmek istemiyorsanız boş bırakın.",
+    "removeConfirm": "\"{name}\" hesabını silmek istediğinize emin misiniz? Bu hesabı kullanan kampanyalar etkilenebilir.",
+    "form": {
+      "provider": "Sağlayıcı",
+      "accountName": "Hesap adı (opsiyonel)",
+      "accountNamePlaceholder": "Örn. İş Mail",
+      "host": "SMTP Sunucusu",
+      "port": "Port",
+      "secure": "SSL / TLS bağlantısı kullan",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "passwordPlaceholderKeep": "Değiştirmemek için boş bırakın",
+      "isDefault": "Bu hesabı varsayılan yap",
+      "save": "Hesabı kaydet",
+      "saveEdit": "Değişiklikleri kaydet",
+      "testHint": "Test ettiğinizde kendi adresinize örnek mail gönderilir.",
+      "hostRequired": "SMTP sunucusu (host) boş olamaz.",
+      "emailRequired": "Geçerli bir e-posta adresi girin.",
+      "passwordRequired": "Şifre boş olamaz.",
+      "saved": "Hesap kaydedildi."
+    },
+    "card": {
+      "default": "Varsayılan",
+      "setDefault": "Varsayılan yap"
+    }
+  },
+
+  "smtp": {
+    "presets": {
+      "gmail": "Gmail",
+      "outlook": "Outlook / Hotmail",
+      "yahoo": "Yahoo Mail",
+      "custom": "Özel SMTP"
+    },
+    "hints": {
+      "gmail": "Şifre olarak uygulama şifresi girin. Gmail hesabınızdan \"Uygulama şifreleri\" sayfasından oluşturabilirsiniz.",
+      "outlook": "Outlook hesabınızda iki adımlı doğrulama açıksa uygulama şifresi gerekir.",
+      "yahoo": "Yahoo hesabınızdan uygulama şifresi oluşturmanız gerekir.",
+      "custom": "Şirketinizin veya hosting sağlayıcınızın SMTP bilgilerini girin."
+    },
+    "testSuccess": "Bağlantı başarılı. Test maili kendi adresinize gönderildi, gelen kutunuzu kontrol edin."
+  },
+
+  "errors": {
+    "title": "Beklenmedik bir hata oluştu",
+    "body": "Uygulamayı yeniden başlatabilir veya bu ekranı yenileyebilirsiniz. Sorun devam ederse hata detayını paylaşın.",
+    "smtp": {
+      "auth": "Kullanıcı adı veya şifre hatalı.",
+      "authHint": "Gmail kullanıyorsanız normal şifrenizle değil \"uygulama şifresi\" ile giriş yapmalısınız.",
+      "timeout": "Sunucu yanıt vermedi (zaman aşımı).",
+      "timeoutHint": "İnternet bağlantınızı kontrol edin. Host ve port doğru mu?",
+      "refused": "Sunucu bağlantıyı reddetti.",
+      "refusedHint": "Port numarasını ve SSL ayarını kontrol edin. Çoğu sağlayıcı 465 (SSL) veya 587 (TLS) kullanır.",
+      "notfound": "SMTP sunucusu bulunamadı.",
+      "notfoundHint": "Sunucu adresi yanlış olabilir veya internetiniz yok.",
+      "ssl": "Sunucunun SSL sertifikası doğrulanamadı.",
+      "sslHint": "Bu özel sunucu için SSL/TLS ayarını kapatmayı deneyin veya yöneticinizle görüşün.",
+      "spam": "Sunucu maili reddetti (spam veya kara liste şüphesi).",
+      "spamHint": "Daha az kişiye gönderin, gönderim hızını düşürün, içeriği kontrol edin.",
+      "quota": "Gönderim limiti aşıldı.",
+      "quotaHint": "Gmail günde ~500, Outlook ~300 mail sınırına sahiptir. Bir süre bekleyin.",
+      "mailbox": "Alıcı adresi geçersiz veya bulunamadı.",
+      "mailboxHint": "E-posta adresinin doğru yazıldığından emin olun.",
+      "envelope": "Mail zarfı (gönderen/alıcı) geçersiz.",
+      "envelopeHint": "Gönderen ve alıcı adreslerini kontrol edin.",
+      "unknown": "Bilinmeyen bir hata oluştu.",
+      "unknownHint": "Detaylı bilgi için aşağıdaki teknik mesaja bakabilirsiniz."
+    }
+  },
+
+  "welcome": {
+    "title": "MailDrop'a hoş geldiniz",
+    "subtitle": "5 dakikada ilk toplu mailinizi göndereceksiniz. Yapmanız gereken 3 şey var.",
+    "step1": "1. E-posta hesabınızı bağlayın",
+    "step1Desc": "Gmail, Outlook veya kendi SMTP'niz.",
+    "step2": "2. Kişi listenizi yükleyin",
+    "step2Desc": "Excel veya CSV dosyanızı sürükleyin.",
+    "step3": "3. İlk şablonunuzu yazın",
+    "step3Desc": "{Ad} gibi değişkenlerle kişiselleştirin.",
+    "privacy": "Gizlilik:",
+    "privacyBody": "Tüm verileriniz bilgisayarınızda kalır. Hiçbir bilgi sunucumuza gönderilmez. Şifreleriniz işletim sisteminizin güvenli alanında şifrelenir.",
+    "later": "Daha sonra",
+    "start": "Başlayalım"
+  },
+
+  "promotion": {
+    "badge": "Tanıtım",
+    "closeIn": "Kapat ({n})",
+    "close": "Kapat",
+    "loading": "Yükleniyor…"
+  }
+}

@@ -1,0 +1,429 @@
+{
+  "appName": "MailDrop",
+  "tagline": "Free, open-source bulk email app",
+  "version": "v{version} · Open source",
+  "openSource": "Open source",
+
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "remove": "Remove",
+    "add": "Add",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "finish": "Done",
+    "loading": "Loading…",
+    "search": "Search",
+    "yes": "Yes",
+    "no": "No",
+    "optional": "optional",
+    "required": "required",
+    "default": "default",
+    "preview": "Preview",
+    "tryAgain": "Try again",
+    "help": "Help",
+    "maybeLater": "Maybe later",
+    "noContent": "—",
+    "test": "Test"
+  },
+
+  "nav": {
+    "home": "Home",
+    "contacts": "Contacts",
+    "templates": "Templates",
+    "sending": "Send",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+
+  "home": {
+    "welcome": "Welcome",
+    "subtitle": "Send your first bulk email in 5 minutes. Follow the steps below in order.",
+    "step1Title": "Connect your account",
+    "step1Desc": "Set up Gmail, Outlook, or your own SMTP.",
+    "step1Cta": "Go to Settings",
+    "step2Title": "Upload your contact list",
+    "step2Desc": "Drag and drop your Excel or CSV file.",
+    "step2Cta": "Go to Contacts",
+    "step3Title": "Write your first template",
+    "step3Desc": "Personalize with variables like {Ad}.",
+    "step3Cta": "Go to Templates",
+    "stepLabel": "STEP {n}",
+    "stepDone": "DONE",
+    "quickSend": "Quick send",
+    "quickSendReady": "You're all set. Start a new send from here.",
+    "quickSendNotReady": "Complete the 3 steps first, then start sending from here.",
+    "newCampaign": "Start New Campaign",
+    "totalContacts": "Total Contacts",
+    "savedTemplates": "Saved Templates",
+    "lastCampaign": "Last Campaign",
+    "noCampaign": "None yet"
+  },
+
+  "contacts": {
+    "title": "All Contacts",
+    "count": "{n} contacts",
+    "importExcel": "Import from Excel",
+    "exportExcel": "Export to Excel",
+    "addContact": "Add contact",
+    "searchPlaceholder": "Search by name, email, or company…",
+    "removeSelected": "Delete {n} contacts",
+    "emptyTitle": "You don't have any contacts yet.",
+    "emptyMatching": "No contacts match your search.",
+    "emptyDesc": "Import your Excel file or add contacts manually.",
+    "emptyMatchingDesc": "Try a different search.",
+    "columns": {
+      "name": "Full Name",
+      "email": "Email",
+      "company": "Company",
+      "group": "Group"
+    },
+    "selectAll": "Select all",
+    "confirmRemoveOne": "Are you sure you want to delete \"{email}\"?",
+    "confirmRemoveMany": "Are you sure you want to delete {n} contacts?",
+    "exportSaved": "Excel file saved.",
+    "exportFileNameAll": "contacts.xlsx",
+    "exportFileNameGroup": "contacts-{group}.xlsx",
+    "form": {
+      "titleNew": "Add new contact",
+      "titleEdit": "Edit contact",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "company": "Company (optional)",
+      "group": "Group (optional)",
+      "noGroup": "— No group —",
+      "invalidEmail": "Enter a valid email address.",
+      "duplicateEmail": "This email address is already registered.",
+      "submitNew": "Add contact",
+      "submitEdit": "Save changes"
+    },
+    "groups": {
+      "header": "Groups",
+      "all": "All contacts",
+      "addGroup": "Add group",
+      "namePlaceholder": "Group name",
+      "removeConfirm": "Are you sure you want to delete the group \"{name}\"? Contacts will not be deleted.",
+      "removeTitle": "Delete group"
+    },
+    "import": {
+      "title": "Import from Excel",
+      "subtitle": "Select your Excel or CSV file, map the columns, and import.",
+      "supportedFiles": "Supports .xlsx, .xls, and .csv files.",
+      "pickFile": "Choose file",
+      "fileReadError": "File is empty or unreadable.",
+      "fieldFirstName": "First name",
+      "fieldLastName": "Last name",
+      "fieldEmail": "Email (required)",
+      "fieldCompany": "Company",
+      "preview": "Preview (first {n} rows)",
+      "noneSelected": "— None —",
+      "customFieldsNote": "Unmapped columns are saved as custom fields ({{Column}}).",
+      "emailRequired": "You must map the Email column.",
+      "doImport": "Import",
+      "doneTitle": "Import complete",
+      "doneInserted": "{n} contacts added successfully.",
+      "doneDuplicates": "{n} emails skipped because they were already registered.",
+      "skippedAddresses": "Skipped addresses:",
+      "andMore": "… and {n} more"
+    }
+  },
+
+  "templates": {
+    "title": "Templates",
+    "selectPrompt": "Select a template",
+    "selectDesc": "Pick a template from the left panel or create a new one. Templates can contain variables like {example1}, {example2}.",
+    "newTemplate": "New template",
+    "empty": "No templates yet.",
+    "removeConfirm": "Are you sure you want to delete the template \"{name}\"?",
+    "noSubject": "(no subject)",
+    "removeTitle": "Delete template",
+    "editor": {
+      "name": "Template name",
+      "namePlaceholder": "e.g. Supplier Balance Reminder",
+      "subject": "Subject",
+      "subjectPlaceholder": "e.g. Hello {FirstName}, balance reminder",
+      "placeholder": "Write your email here. Use the right panel for variables.",
+      "nameRequired": "Template name cannot be empty.",
+      "subjectRequired": "Subject line cannot be empty.",
+      "bodyRequired": "Email body cannot be empty.",
+      "saved": "Template saved.",
+      "saveTemplate": "Save template",
+      "addAttachment": "Add attachment",
+      "changeAttachment": "Change attachment",
+      "removeAttachment": "Remove attachment",
+      "importHtml": "Import HTML",
+      "linkPrompt": "Link URL (leave empty to remove):",
+      "toolbar": {
+        "undo": "Undo",
+        "redo": "Redo",
+        "heading2": "Heading 2",
+        "heading3": "Heading 3",
+        "bold": "Bold",
+        "italic": "Italic",
+        "underline": "Underline",
+        "strike": "Strikethrough",
+        "bulletList": "Bullet list",
+        "orderedList": "Numbered list",
+        "blockquote": "Quote",
+        "link": "Insert link"
+      }
+    },
+    "variables": {
+      "header": "Variables",
+      "hint": "Click to add to subject or body. They'll be replaced with each contact's data on send.",
+      "detected": "Detected",
+      "used": "Used in template",
+      "addTooltip": "Click to add"
+    },
+    "preview": {
+      "title": "Template preview",
+      "subtitle": "See how the template will look with selected contact data.",
+      "noContacts": "You need at least one contact to preview. Add one from the Contacts tab first.",
+      "testContact": "Test contact",
+      "subjectLabel": "Subject",
+      "toLabel": "To",
+      "empty": "(empty)",
+      "draftNote": "Showing preview of an unsaved template."
+    }
+  },
+
+  "sending": {
+    "title": "New Campaign",
+    "subtitle": "Send bulk emails in 4 steps.",
+    "steps": {
+      "contacts": "Contacts",
+      "template": "Template",
+      "settings": "Settings",
+      "confirm": "Confirm",
+      "running": "Sending"
+    },
+    "noSmtpTitle": "Connect an email account first",
+    "noSmtpDesc": "To send bulk emails, you must first connect a Gmail, Outlook, or custom SMTP account from Settings.",
+    "noTemplateTitle": "Create a template first",
+    "noTemplateDesc": "To send bulk emails, you must create at least one template from the Templates tab.",
+    "nextTemplate": "Go to template selection",
+    "nextSettings": "Go to settings",
+    "nextConfirm": "Go to confirmation",
+    "noTemplatesYet": "No templates yet. Create one from the Templates tab.",
+    "contactPicker": {
+      "all": "All",
+      "searchPlaceholder": "Search in list…",
+      "addVisible": "Add visible",
+      "clearSelection": "Clear selection",
+      "noMatch": "No matching contacts.",
+      "selectedCount": "{n} contacts selected"
+    },
+    "settings": {
+      "cardTitle": "Send settings",
+      "campaignName": "Campaign name (optional)",
+      "fromAccount": "From account",
+      "rate": "Emails per second",
+      "rateOptions": {
+        "half": "0.5 (one every 2 seconds — safest)",
+        "one": "1 email / second (recommended)",
+        "two": "2 emails / second",
+        "five": "5 emails / second (Gmail limit risky)"
+      },
+      "rateHint": "Slower sending reduces the risk of being marked as spam.",
+      "schedule": "Schedule (optional)",
+      "scheduleHint": "Leave empty to start immediately. Scheduled sends won't run if the app is closed."
+    },
+    "confirm": {
+      "cardTitle": "Send summary",
+      "recipientCount": "Recipients",
+      "recipientCountValue": "{n} contacts",
+      "templateLabel": "Template",
+      "subjectLabel": "Subject",
+      "fromLabel": "From",
+      "rateLabel": "Rate",
+      "rateValue": "{n} emails / second",
+      "estimatedDuration": "Estimated duration",
+      "minutes": "{n} minutes",
+      "scheduleLabel": "Schedule",
+      "doubleCheckTitle": "Please double-check",
+      "doubleCheckBody": "You're about to send emails to {count} contacts from {from}. Once started you can pause or cancel, but sent emails cannot be recalled.",
+      "errorTitle": "Error",
+      "sendNow": "Send now",
+      "schedule": "Schedule"
+    },
+    "console": {
+      "pending": "Pending",
+      "running": "Sending in progress…",
+      "paused": "Paused",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "failed": "Failed",
+      "progress": "Progress",
+      "success": "Success",
+      "failure": "Failed",
+      "remaining": "Remaining",
+      "sending": "Sending: {email}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "cancel": "Cancel",
+      "retryFailed": "Retry failed"
+    }
+  },
+
+  "reports": {
+    "title": "Reports",
+    "summary": "{n} campaign history.",
+    "empty": "No campaigns yet",
+    "emptyDesc": "Start your first campaign from the Send tab.",
+    "historyTitle": "Campaign history",
+    "columns": {
+      "campaign": "Campaign",
+      "date": "Date",
+      "total": "Total",
+      "success": "Success",
+      "failure": "Failed",
+      "status": "Status"
+    },
+    "removeConfirm": "Are you sure you want to delete the campaign \"{name}\"? Detail logs will also be deleted.",
+    "status": {
+      "completed": "Completed",
+      "running": "Running",
+      "paused": "Paused",
+      "pending": "Pending",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "back": "Back to list",
+      "totalLabel": "Total",
+      "successLabel": "Success",
+      "failureLabel": "Failed",
+      "successRate": "Success rate",
+      "startedAt": "Started",
+      "finishedAt": "Finished",
+      "detailsTitle": "Send detail",
+      "filterAll": "All ({n})",
+      "filterSuccess": "Success ({n})",
+      "filterFailure": "Failed ({n})",
+      "noRecords": "No records.",
+      "colEmail": "Email",
+      "colError": "Error message",
+      "colTime": "Time",
+      "exportSaved": "Report saved:\n{path}"
+    }
+  },
+
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your SMTP accounts here. Passwords are encrypted on your computer.",
+    "language": {
+      "cardTitle": "Language",
+      "label": "Interface language",
+      "hint": "Changes apply immediately."
+    },
+    "promotions": {
+      "cardTitle": "Promotion suggestions",
+      "label": "Show Bilgetek promotion suggestions",
+      "hint": "Occasionally when the app closes, you may see a suggestion for another product in the Bilgetek ecosystem. Turn this off if you'd prefer not to."
+    },
+    "accountsCardTitle": "Connected accounts",
+    "noAccountsYet": "No email account added yet.",
+    "accountsCount": "{n} accounts connected.",
+    "newAccount": "New account",
+    "emptyHint": "Connect an email account first to send bulk mail.",
+    "formCardTitle": "Add new account",
+    "formCardDesc": "Settings are auto-filled for Gmail, Outlook, and Yahoo. Choose \"Custom SMTP\" otherwise.",
+    "editTitle": "Edit account",
+    "editDesc": "Leave the password empty to keep it unchanged.",
+    "removeConfirm": "Are you sure you want to delete the account \"{name}\"? Campaigns using it may be affected.",
+    "form": {
+      "provider": "Provider",
+      "accountName": "Account name (optional)",
+      "accountNamePlaceholder": "e.g. Work Mail",
+      "host": "SMTP Server",
+      "port": "Port",
+      "secure": "Use SSL / TLS",
+      "email": "Email address",
+      "password": "Password",
+      "passwordPlaceholderKeep": "Leave empty to keep unchanged",
+      "isDefault": "Make this account default",
+      "save": "Save account",
+      "saveEdit": "Save changes",
+      "testHint": "Test sends a sample email to your own address.",
+      "hostRequired": "SMTP server (host) cannot be empty.",
+      "emailRequired": "Enter a valid email address.",
+      "passwordRequired": "Password cannot be empty.",
+      "saved": "Account saved."
+    },
+    "card": {
+      "default": "Default",
+      "setDefault": "Set as default"
+    }
+  },
+
+  "smtp": {
+    "presets": {
+      "gmail": "Gmail",
+      "outlook": "Outlook / Hotmail",
+      "yahoo": "Yahoo Mail",
+      "custom": "Custom SMTP"
+    },
+    "hints": {
+      "gmail": "Enter an app password as your password. You can create one from \"App passwords\" in your Google Account.",
+      "outlook": "If two-step verification is enabled, you'll need an app password.",
+      "yahoo": "You'll need to create an app password from your Yahoo account.",
+      "custom": "Enter your company's or hosting provider's SMTP details."
+    },
+    "testSuccess": "Connection successful. A test email was sent to your address — check your inbox."
+  },
+
+  "errors": {
+    "title": "Something went wrong",
+    "body": "You can restart the app or refresh this screen. If the problem persists, share the error details.",
+    "smtp": {
+      "auth": "Username or password is incorrect.",
+      "authHint": "If you use Gmail, you must sign in with an \"app password\" instead of your normal password.",
+      "timeout": "Server did not respond (timeout).",
+      "timeoutHint": "Check your internet connection. Are the host and port correct?",
+      "refused": "Server refused the connection.",
+      "refusedHint": "Check the port and SSL setting. Most providers use 465 (SSL) or 587 (TLS).",
+      "notfound": "SMTP server not found.",
+      "notfoundHint": "The server address may be wrong, or you may be offline.",
+      "ssl": "Server SSL certificate could not be verified.",
+      "sslHint": "Try turning off SSL/TLS for this custom server or contact your admin.",
+      "spam": "Server rejected the email (suspected spam or blacklist).",
+      "spamHint": "Send to fewer people, slow down the rate, and review the content.",
+      "quota": "Sending limit exceeded.",
+      "quotaHint": "Gmail allows ~500/day, Outlook ~300/day. Please wait.",
+      "mailbox": "Recipient address is invalid or not found.",
+      "mailboxHint": "Make sure the email address is spelled correctly.",
+      "envelope": "Mail envelope (sender/recipient) is invalid.",
+      "envelopeHint": "Check the sender and recipient addresses.",
+      "unknown": "An unknown error occurred.",
+      "unknownHint": "See the technical message below for details."
+    }
+  },
+
+  "welcome": {
+    "title": "Welcome to MailDrop",
+    "subtitle": "You'll send your first bulk email in 5 minutes. There are 3 things to do.",
+    "step1": "1. Connect your email account",
+    "step1Desc": "Gmail, Outlook, or your own SMTP.",
+    "step2": "2. Upload your contact list",
+    "step2Desc": "Drag in your Excel or CSV file.",
+    "step3": "3. Write your first template",
+    "step3Desc": "Personalize with variables like {Ad}.",
+    "privacy": "Privacy:",
+    "privacyBody": "All your data stays on your computer. No information is sent to our servers. Your passwords are stored in your operating system's secure storage.",
+    "later": "Later",
+    "start": "Let's go"
+  },
+
+  "promotion": {
+    "badge": "Sponsored",
+    "closeIn": "Close ({n})",
+    "close": "Close",
+    "loading": "Loading…"
+  }
+}

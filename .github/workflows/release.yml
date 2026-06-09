@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: build:win
+            artifact: '*.exe'
+          - os: macos-latest
+            script: build:mac
+            artifact: '*.dmg'
+          - os: ubuntu-latest
+            script: build:linux
+            artifact: '*.AppImage'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build (${{ matrix.os }})
+        run: npm run ${{ matrix.script }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact (for inspection)
+        uses: actions/upload-artifact@v4
+        with:
+          name: maildrop-${{ matrix.os }}
+          path: release/**/${{ matrix.artifact }}
+          if-no-files-found: warn
+          retention-days: 7
+
+  publish:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: ls -R artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.exe
+            artifacts/**/*.dmg
+            artifacts/**/*.AppImage
+            artifacts/**/*.deb
+            artifacts/**/*.blockmap
+            artifacts/**/latest*.yml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## MailDrop ${{ github.ref_name }}
+
+            Ücretsiz, açık kaynak Türkçe + İngilizce toplu e-posta gönderim uygulaması.
+            Free, open-source bulk email app in Turkish and English.
+
+            ### İndir / Download
+
+            - **Windows:** `MailDrop-Setup-*.exe`
+            - **macOS:** `MailDrop-*.dmg`
+            - **Linux:** `*.AppImage` veya `*.deb`
+
+            Tüm değişiklikler için aşağıya bakın / See full changelog below.
