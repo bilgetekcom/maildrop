@@ -322,6 +322,23 @@
       "label": "Arayüz dili",
       "hint": "Değişiklik anında uygulanır."
     },
+    "updates": {
+      "cardTitle": "Güncellemeler",
+      "currentVersion": "Mevcut sürüm:",
+      "check": "Kontrol et",
+      "upToDate": "Güncel sürümü kullanıyorsunuz",
+      "upToDateBody": "v{version} en son sürüm. Yeni bir güncelleme yok.",
+      "newVersion": "Yeni sürüm var: v{version}",
+      "newVersionBody": "Güncellemeyi indirip kurarak en yeni özelliklere ve hata düzeltmelerine ulaşabilirsiniz.",
+      "releaseNotes": "Sürüm notları",
+      "download": "İndir",
+      "downloading": "Güncelleme indiriliyor…",
+      "downloaded": "Güncelleme hazır",
+      "downloadedBody": "v{version} indirildi. \"Şimdi yükle\" dediğinizde uygulama kapatılıp yeni sürüm kurulur.",
+      "installNow": "Şimdi yükle ve yeniden başlat",
+      "errorTitle": "Güncelleme kontrolü başarısız",
+      "errorBody": "İnternet bağlantınızı kontrol edin. Sorun devam ederse bilgetek.com/maildrop adresinden manuel olarak indirebilirsiniz."
+    },
     "promotions": {
       "cardTitle": "Tanıtım önerileri",
       "label": "Bilgetek tanıtım önerilerini göster",

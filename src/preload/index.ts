@@ -104,6 +104,29 @@ const api = {
       ipcRenderer.on('app:beforeClose', listener)
       return () => ipcRenderer.removeListener('app:beforeClose', listener)
     }
+  },
+  updater: {
+    check: (): Promise<{ ok: boolean; version: string | null; currentVersion: string; error?: string }> =>
+      ipcRenderer.invoke('updater:check'),
+    download: (): Promise<{ ok: boolean; error?: string }> => ipcRenderer.invoke('updater:download'),
+    install: (): Promise<void> => ipcRenderer.invoke('updater:install'),
+    currentVersion: (): Promise<string> => ipcRenderer.invoke('updater:currentVersion'),
+    onEvent: (cb: (event: string, payload: unknown) => void): (() => void) => {
+      const channels = [
+        'updater:checking',
+        'updater:available',
+        'updater:not-available',
+        'updater:progress',
+        'updater:downloaded',
+        'updater:error'
+      ]
+      const listeners: Array<[string, (...args: unknown[]) => void]> = channels.map((ch) => {
+        const l = (_: unknown, payload: unknown): void => cb(ch, payload)
+        ipcRenderer.on(ch, l as never)
+        return [ch, l as never]
+      })
+      return () => listeners.forEach(([ch, l]) => ipcRenderer.removeListener(ch, l))
+    }
   }
 }
 

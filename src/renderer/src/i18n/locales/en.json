@@ -322,6 +322,23 @@
       "label": "Interface language",
       "hint": "Changes apply immediately."
     },
+    "updates": {
+      "cardTitle": "Updates",
+      "currentVersion": "Current version:",
+      "check": "Check",
+      "upToDate": "You're on the latest version",
+      "upToDateBody": "v{version} is the most recent release. No update available.",
+      "newVersion": "New version available: v{version}",
+      "newVersionBody": "Download the update to get the latest features and bug fixes.",
+      "releaseNotes": "Release notes",
+      "download": "Download",
+      "downloading": "Downloading update…",
+      "downloaded": "Update ready",
+      "downloadedBody": "v{version} downloaded. When you click \"Install now\" the app will close and the new version will install.",
+      "installNow": "Install now and restart",
+      "errorTitle": "Update check failed",
+      "errorBody": "Check your internet connection. If the problem persists you can download manually from bilgetek.com/maildrop."
+    },
     "promotions": {
       "cardTitle": "Promotion suggestions",
       "label": "Show Bilgetek promotion suggestions",

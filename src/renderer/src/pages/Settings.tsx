@@ -6,6 +6,7 @@ import type { SmtpAccount } from '../../../shared/types'
 import { AccountCard } from '../components/settings/AccountCard'
 import { AccountForm } from '../components/settings/AccountForm'
 import { EditAccountDialog } from '../components/settings/EditAccountDialog'
+import { UpdateCard } from '../components/settings/UpdateCard'
 import { Button } from '../components/ui/button'
 import { Select } from '../components/ui/select'
 import { Switch } from '../components/ui/switch'
@@ -66,6 +67,8 @@ export function Settings(): JSX.Element {
             </div>
           </CardContent>
         </Card>
+
+        <UpdateCard />
 
         <Card>
           <CardHeader>

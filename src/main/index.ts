@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerCloseHandshake } from './ipc/close-handshake'
+import { setupAutoUpdater, registerUpdaterHandlers, startBackgroundCheck } from './updater'
 import { registerSmtpHandlers } from './ipc/smtp'
 import { registerContactHandlers } from './ipc/contacts'
 import { registerTemplateHandlers } from './ipc/templates'
@@ -70,8 +71,11 @@ app.whenReady().then(() => {
   registerTemplateHandlers(ipcMain)
   registerCampaignHandlers(ipcMain)
   registerReportHandlers(ipcMain)
+  registerUpdaterHandlers(ipcMain)
+  setupAutoUpdater()
 
   createWindow()
+  if (!is.dev) startBackgroundCheck()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
