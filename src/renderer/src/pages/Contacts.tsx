@@ -9,9 +9,11 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import type { Contact } from '../../../shared/types'
 import { useT } from '../i18n'
+import { useToast } from '../components/ui/toast'
 
 export function Contacts(): JSX.Element {
   const { t } = useT()
+  const toast = useToast()
   const {
     contacts,
     groups,
@@ -83,7 +85,7 @@ export function Contacts(): JSX.Element {
     const path = await window.api.dialog.saveExcel(defaultName)
     if (!path) return
     await exportExcel(path, activeGroupId)
-    alert(t('contacts.exportSaved'))
+    toast.push(t('contacts.exportSaved'), 'success')
   }
 
   const activeGroup = activeGroupId ? groups.find((g) => g.id === activeGroupId) : null

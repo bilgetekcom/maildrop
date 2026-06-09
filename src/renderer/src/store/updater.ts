@@ -33,7 +33,7 @@ interface UpdaterStore {
 
 export const useUpdaterStore = create<UpdaterStore>((set, get) => ({
   status: 'idle',
-  currentVersion: '0.1.0',
+  currentVersion: '',
   available: null,
   progress: null,
   error: null,

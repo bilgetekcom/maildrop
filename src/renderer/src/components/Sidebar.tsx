@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Home, Users, Mail, Send, BarChart3, Settings } from 'lucide-react'
 import type { Section } from '../App'
 import { cn } from '../lib/utils'
@@ -10,6 +11,12 @@ interface SidebarProps {
 
 export function Sidebar({ active, onSelect }: SidebarProps): JSX.Element {
   const { t } = useT()
+  const [version, setVersion] = useState<string>('')
+
+  useEffect(() => {
+    void window.api.updater.currentVersion().then(setVersion)
+  }, [])
+
   const items: { id: Section; label: string; icon: typeof Home }[] = [
     { id: 'home', label: t('nav.home'), icon: Home },
     { id: 'contacts', label: t('nav.contacts'), icon: Users },
@@ -52,7 +59,7 @@ export function Sidebar({ active, onSelect }: SidebarProps): JSX.Element {
         })}
       </nav>
       <div className="px-5 py-4 border-t text-xs text-muted-foreground">
-        {t('version', { version: '0.1.0' })}
+        {version ? t('version', { version }) : ' '}
       </div>
     </aside>
   )

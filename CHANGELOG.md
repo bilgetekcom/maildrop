@@ -4,6 +4,57 @@ Tüm önemli değişiklikler burada belgelenir. Sürümler [Semantic Versioning]
 
 ## [Yayınlanmamış]
 
+### v0.1.2 — Production hardening (2026-06-09)
+
+54 maddelik audit sonrası kapsamlı temizlik. Tüm kullanıcılara güçlü öneri: bu sürüme güncelleyin.
+
+**Güvenlik**
+- electron-updater + Electron 38 LTS'e geçildi (önceki 32.x EOL ve 17 yüksek advisory taşıyordu)
+- nodemailer 8.0.10+ (ReDoS + interpretation-conflict CVE'leri kapandı)
+- xlsx 0.18.5 (prototype pollution + ReDoS) tamamen kaldırıldı, exceljs ile değiştirildi
+- `setWindowOpenHandler` protokol whitelist: artık sadece http/https/mailto açar, `file://`/`smb://`/`javascript:` reddediliyor
+- `will-navigate` interceptor: harici linkleri her zaman dış tarayıcıya yönlendirir
+- Excel/şablon IPC'sinde tüm dosya yolları `assertSafePath` ile doğrulanıyor (sistem klasörleri ve app dir engellendi)
+- bilgetek-ads Worker'ında query parametre uzunluk + format whitelist'i
+
+**Gizlilik**
+- Google Fonts kaldırıldı, sistem font stack'ine geçildi ("veri lokalde kalır" iddiası tutarlı)
+- README'de fetch zamanlaması düzeltildi
+
+**i18n**
+- SMTP hata sözlüğü main process'ten kalkıp ortak error code şemasına geçti, renderer her locale için doğru mesajı render eder
+- SMTP test maili kullanıcının diline göre gönderilir
+- Şablon değişkenleri TR + EN + lowercase alias destekler (`{{Ad}}` ve `{{FirstName}}` ikisi de çalışır)
+- Settings'te SMTP/template FK delete hatası anlaşılır toast olarak
+- ContactsTable LIMIT/OFFSET + count endpoint (10K kişi için temel)
+- Dialog aria-label, native alert → Toast component
+
+**Robustness**
+- `runCampaign` outer try/catch + finally ile orphan state önlendi
+- Startup recovery: çökme sonrası running/paused kayıtlar cancelled'a çekilir, scheduled olan timer yeniden kurulur
+- `campaigns` tablosuna `scheduled_at`, `rate_per_second`, `target_contact_ids` kolonları (migration v2)
+- Kampanya çalışırken app kapanması engelleniyor (kullanıcıya onay sorulur)
+- Resume after restart: cache'lenmiş log'lara göre kaldığı yerden devam
+- Attachment dosyası gönderim öncesi `existsSync` ile doğrulanır
+- 25 MB üstü ek dosya seçiminde toast uyarısı
+
+**Pipeline**
+- release.yml: tag/package.json version consistency check
+- release publish: CHANGELOG.md'den release notes çıkarımı
+- bilgetek.com/api/maildrop/latest cache TTL 1h → 5dk, `?refresh` param ile manuel bypass
+- bilgetek-ads private repo'ya alındı (`bilgetekcom/bilgetek-ads`)
+- embedded-fallback localhost URL'leri prod URL'e çevrildi
+
+**UX**
+- Sidebar versiyon artık dinamik (IPC üzerinden `app.getVersion()`)
+- Promotions client APP_VERSION dinamik
+- Toast component (native alert kaldırıldı)
+- Templates delete confirm gerçek "emin misiniz" mesajı
+
+**Geriye uyumluluk**
+- macOS auto-update kod imzasız çalışmadığı için Settings'te "manuel indir" alternatif gösterilir
+- v0.1.1 kullanıcıları electron-updater ile v0.1.2'yi otomatik alır
+
 ### Sprint 9 — Production deploy + görsel altyapı + E2E (2026-06-09)
 - **bilgetek-ads Cloudflare'e deploy edildi:** Worker `https://app.bilgetek.com`, R2 bucket `bilgetek-ads`, KV `ADS_CACHE`, otomatik DNS + SSL
 - **Görsel reklam altyapısı:** Worker'a `/api/assets/:filename` route, R2 + embedded base64 fallback, 640×280 BulkPro test bannerları (TR+EN) üretildi ve R2'ya yüklendi

@@ -89,5 +89,13 @@ export interface SendProgress {
 
 export interface SmtpTestResult {
   ok: boolean
-  message: string
+  /** Error code if !ok; renderer maps to localized message. Empty string on success. */
+  code: string
+  /** Raw upstream error message for diagnostics (may include vendor English text) */
+  raw?: string
+}
+
+export interface SendLocale {
+  /** UI locale, propagated to main so test mails and dynamic strings come out in user's language */
+  locale: 'tr' | 'en'
 }

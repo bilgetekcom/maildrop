@@ -35,6 +35,19 @@ export function ExitGuard(): JSX.Element {
 
   useEffect(() => {
     const unsub = window.api.appLifecycle.onBeforeClose(async () => {
+      // If a campaign is actively sending, ask before closing.
+      const busy = await window.api.appLifecycle.hasActiveSending()
+      if (busy) {
+        const ok = window.confirm(
+          locale === 'en'
+            ? 'A bulk send is in progress. Closing now will cancel the remaining messages. Close anyway?'
+            : 'Bir toplu gönderim devam ediyor. Şimdi kapatırsanız kalan mailler iptal edilir. Yine de kapatılsın mı?'
+        )
+        if (!ok) {
+          await window.api.appLifecycle.cancelClose()
+          return
+        }
+      }
       if (!promotionsEnabled || allPromos.length === 0) {
         await window.api.appLifecycle.confirmClose()
         return
@@ -48,7 +61,7 @@ export function ExitGuard(): JSX.Element {
       setActivePromo(pick)
     })
     return unsub
-  }, [allPromos, appOpenCount, promotionsEnabled])
+  }, [allPromos, appOpenCount, promotionsEnabled, locale])
 
   async function handleClose(): Promise<void> {
     setActivePromo(null)

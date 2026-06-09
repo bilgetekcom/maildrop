@@ -1,8 +1,9 @@
 import type { IpcMain } from 'electron'
 import { getDb, encryptSecret } from '../db'
 import type { SmtpAccount, SmtpAccountInput, SmtpTestResult } from '../../shared/types'
+import { ERR } from '../../shared/errors'
 import nodemailer from 'nodemailer'
-import { translateSmtpError } from '../lib/error-translator'
+import { classifySmtpError } from '../lib/error-translator'
 
 function rowToAccount(r: Record<string, unknown>): SmtpAccount {
   return {
@@ -15,6 +16,17 @@ function rowToAccount(r: Record<string, unknown>): SmtpAccount {
     encryptedPass: r.encrypted_pass as string,
     isDefault: Boolean(r.is_default),
     createdAt: r.created_at as string
+  }
+}
+
+const TEST_MAIL = {
+  tr: {
+    subject: 'MailDrop bağlantı testi',
+    body: 'Bu mail MailDrop SMTP bağlantı testi tarafından gönderildi. Bağlantı çalışıyor.'
+  },
+  en: {
+    subject: 'MailDrop connection test',
+    body: 'This message was sent by the MailDrop SMTP connection test. The connection works.'
   }
 }
 
@@ -49,27 +61,36 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     return rowToAccount(row)
   })
 
-  ipc.handle('smtp:test', async (_, input: SmtpAccountInput, sampleTo: string): Promise<SmtpTestResult> => {
-    try {
-      const transport = nodemailer.createTransport({
-        host: input.host,
-        port: input.port,
-        secure: input.secure,
-        auth: { user: input.user, pass: input.password }
-      })
-      await transport.verify()
-      await transport.sendMail({
-        from: input.user,
-        to: sampleTo,
-        subject: 'MailDrop bağlantı testi',
-        text: 'Bu mail MailDrop SMTP testi tarafından gönderildi. Bağlantı çalışıyor.'
-      })
-      return { ok: true, message: 'Bağlantı başarılı. Test maili kendi adresinize gönderildi, gelen kutunuzu kontrol edin.' }
-    } catch (e) {
-      const t = translateSmtpError(e as Error)
-      return { ok: false, message: `${t.message} ${t.hint}` }
+  ipc.handle(
+    'smtp:test',
+    async (
+      _,
+      input: SmtpAccountInput,
+      sampleTo: string,
+      locale: 'tr' | 'en' = 'tr'
+    ): Promise<SmtpTestResult> => {
+      const mail = TEST_MAIL[locale] ?? TEST_MAIL.tr
+      try {
+        const transport = nodemailer.createTransport({
+          host: input.host,
+          port: input.port,
+          secure: input.secure,
+          auth: { user: input.user, pass: input.password }
+        })
+        await transport.verify()
+        await transport.sendMail({
+          from: input.user,
+          to: sampleTo,
+          subject: mail.subject,
+          text: mail.body
+        })
+        return { ok: true, code: '' }
+      } catch (e) {
+        const err = e as Error
+        return { ok: false, code: classifySmtpError(err), raw: err.message }
+      }
     }
-  })
+  )
 
   ipc.handle('smtp:remove', (_, id: number) => {
     getDb().prepare('DELETE FROM smtp_accounts WHERE id = ?').run(id)
@@ -92,12 +113,20 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     if (input.port !== undefined) { sets.push('port = ?'); vals.push(input.port) }
     if (input.secure !== undefined) { sets.push('secure = ?'); vals.push(input.secure ? 1 : 0) }
     if (input.user !== undefined) { sets.push('user = ?'); vals.push(input.user) }
-    if (input.password !== undefined) { sets.push('encrypted_pass = ?'); vals.push(encryptSecret(input.password)) }
+    if (input.password !== undefined) {
+      sets.push('encrypted_pass = ?')
+      vals.push(encryptSecret(input.password))
+    }
     if (sets.length) {
       vals.push(id)
       db.prepare(`UPDATE smtp_accounts SET ${sets.join(', ')} WHERE id = ?`).run(...vals)
     }
-    const row = db.prepare('SELECT * FROM smtp_accounts WHERE id = ?').get(id) as Record<string, unknown>
+    const row = db.prepare('SELECT * FROM smtp_accounts WHERE id = ?').get(id) as Record<
+      string,
+      unknown
+    >
     return rowToAccount(row)
   })
 }
+
+export { ERR }

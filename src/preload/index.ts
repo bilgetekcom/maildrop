@@ -20,13 +20,23 @@ const api = {
     update: (id: number, input: Partial<SmtpAccountInput>): Promise<SmtpAccount> =>
       ipcRenderer.invoke('smtp:update', id, input),
     remove: (id: number): Promise<void> => ipcRenderer.invoke('smtp:remove', id),
-    test: (input: SmtpAccountInput, sampleTo: string): Promise<SmtpTestResult> =>
-      ipcRenderer.invoke('smtp:test', input, sampleTo),
+    test: (
+      input: SmtpAccountInput,
+      sampleTo: string,
+      locale: 'tr' | 'en'
+    ): Promise<SmtpTestResult> => ipcRenderer.invoke('smtp:test', input, sampleTo, locale),
     setDefault: (id: number): Promise<void> => ipcRenderer.invoke('smtp:setDefault', id)
   },
   contacts: {
-    list: (search?: string, groupId?: number | null): Promise<Contact[]> =>
-      ipcRenderer.invoke('contacts:list', search, groupId),
+    list: (
+      search?: string,
+      groupId?: number | null,
+      limit?: number,
+      offset?: number
+    ): Promise<Contact[]> =>
+      ipcRenderer.invoke('contacts:list', search, groupId, limit, offset),
+    count: (search?: string, groupId?: number | null): Promise<number> =>
+      ipcRenderer.invoke('contacts:count', search, groupId),
     create: (input: Omit<Contact, 'id' | 'createdAt'>): Promise<Contact> =>
       ipcRenderer.invoke('contacts:create', input),
     update: (id: number, input: Partial<Contact>): Promise<Contact> =>
@@ -86,7 +96,9 @@ const api = {
     openExcel: (): Promise<string | null> => ipcRenderer.invoke('dialog:openExcel'),
     saveExcel: (defaultName: string): Promise<string | null> =>
       ipcRenderer.invoke('dialog:saveExcel', defaultName),
-    openAttachment: (): Promise<string | null> => ipcRenderer.invoke('dialog:openAttachment')
+    openAttachment: (): Promise<string | null> => ipcRenderer.invoke('dialog:openAttachment'),
+    statFile: (path: string): Promise<{ size: number; sizeMB: number } | null> =>
+      ipcRenderer.invoke('dialog:statFile', path)
   },
   reports: {
     exportCampaign: (campaignId: number): Promise<string | null> =>
@@ -103,7 +115,8 @@ const api = {
       const listener = (): void => cb()
       ipcRenderer.on('app:beforeClose', listener)
       return () => ipcRenderer.removeListener('app:beforeClose', listener)
-    }
+    },
+    hasActiveSending: (): Promise<boolean> => ipcRenderer.invoke('app:hasActiveSending')
   },
   updater: {
     check: (): Promise<{ ok: boolean; version: string | null; currentVersion: string; error?: string }> =>

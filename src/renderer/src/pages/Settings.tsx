@@ -13,9 +13,11 @@ import { Switch } from '../components/ui/switch'
 import { Label } from '../components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { useT, SUPPORTED_LOCALES, type Locale } from '../i18n'
+import { useToast } from '../components/ui/toast'
 
 export function Settings(): JSX.Element {
   const { t, locale, setLocale } = useT()
+  const toast = useToast()
   const { accounts, loading, refresh, create, update, remove, setDefault, test } = useSmtpStore()
   const { promotionsEnabled, togglePromotions } = usePreferencesStore()
   const [showForm, setShowForm] = useState(false)
@@ -32,7 +34,16 @@ export function Settings(): JSX.Element {
   async function handleRemove(account: SmtpAccount): Promise<void> {
     const ok = window.confirm(t('settings.removeConfirm', { name: account.name }))
     if (!ok) return
-    await remove(account.id)
+    try {
+      await remove(account.id)
+    } catch (e) {
+      const msg = (e as Error).message
+      if (msg.includes('FOREIGN KEY') || msg.includes('RESTRICT')) {
+        toast.push(t('toast.smtpDeleteBlocked'), 'error', 6000)
+      } else {
+        toast.push(msg, 'error', 6000)
+      }
+    }
   }
 
   return (

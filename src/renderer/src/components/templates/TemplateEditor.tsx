@@ -14,6 +14,7 @@ import { EditorToolbar } from './EditorToolbar'
 import { VariablePanel } from './VariablePanel'
 import { PreviewDialog } from './PreviewDialog'
 import { useT } from '../../i18n'
+import { useToast } from '../ui/toast'
 
 interface TemplateEditorProps {
   template: Template | null
@@ -30,6 +31,7 @@ function extractVariables(s: string): string[] {
 
 export function TemplateEditor({ template, onCreated }: TemplateEditorProps): JSX.Element {
   const { t } = useT()
+  const toast = useToast()
   const { create, update } = useTemplatesStore()
   const [name, setName] = useState('')
   const [subject, setSubject] = useState('')
@@ -81,7 +83,16 @@ export function TemplateEditor({ template, onCreated }: TemplateEditorProps): JS
 
   async function handleAttach(): Promise<void> {
     const path = await window.api.dialog.openAttachment()
-    if (path) setAttachment(path)
+    if (!path) return
+    try {
+      const stat = await window.api.dialog.statFile(path)
+      if (stat?.sizeMB && stat.sizeMB > 25) {
+        toast.push(t('toast.attachmentTooLarge', { size: stat.sizeMB.toFixed(1) }), 'error', 7000)
+      }
+    } catch {
+      /* ignore stat failure */
+    }
+    setAttachment(path)
   }
 
   async function handleImportHtml(): Promise<void> {

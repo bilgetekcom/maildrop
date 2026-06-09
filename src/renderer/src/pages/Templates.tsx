@@ -5,9 +5,11 @@ import { TemplateList } from '../components/templates/TemplateList'
 import { TemplateEditor } from '../components/templates/TemplateEditor'
 import type { Template } from '../../../shared/types'
 import { useT } from '../i18n'
+import { useToast } from '../components/ui/toast'
 
 export function Templates(): JSX.Element {
   const { t } = useT()
+  const toast = useToast()
   const { templates, selectedId, refresh, select, remove } = useTemplatesStore()
   const [draftMode, setDraftMode] = useState(false)
 
@@ -15,12 +17,21 @@ export function Templates(): JSX.Element {
     void refresh()
   }, [refresh])
 
-  const selected = templates.find((t) => t.id === selectedId) ?? null
+  const selected = templates.find((tpl) => tpl.id === selectedId) ?? null
 
-  async function handleRemove(t: Template): Promise<void> {
-    const ok = window.confirm(`${t.name}`)
+  async function handleRemove(tpl: Template): Promise<void> {
+    const ok = window.confirm(t('templates.removeConfirm', { name: tpl.name }))
     if (!ok) return
-    await remove(t.id)
+    try {
+      await remove(tpl.id)
+    } catch (e) {
+      const msg = (e as Error).message
+      if (msg.includes('FOREIGN KEY') || msg.includes('RESTRICT')) {
+        toast.push(t('toast.templateDeleteBlocked'), 'error', 6000)
+      } else {
+        toast.push(msg, 'error', 6000)
+      }
+    }
   }
 
   function handleCreate(): void {

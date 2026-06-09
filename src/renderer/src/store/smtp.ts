@@ -9,7 +9,7 @@ interface SmtpStore {
   update: (id: number, input: Partial<SmtpAccountInput>) => Promise<SmtpAccount>
   remove: (id: number) => Promise<void>
   setDefault: (id: number) => Promise<void>
-  test: (input: SmtpAccountInput, sampleTo: string) => Promise<SmtpTestResult>
+  test: (input: SmtpAccountInput, sampleTo: string, locale: 'tr' | 'en') => Promise<SmtpTestResult>
 }
 
 export const useSmtpStore = create<SmtpStore>((set, get) => ({
@@ -44,7 +44,7 @@ export const useSmtpStore = create<SmtpStore>((set, get) => ({
     await get().refresh()
   },
 
-  test: async (input, sampleTo) => {
-    return window.api.smtp.test(input, sampleTo)
+  test: async (input, sampleTo, locale) => {
+    return window.api.smtp.test(input, sampleTo, locale)
   }
 }))

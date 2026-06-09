@@ -324,6 +324,9 @@
     },
     "updates": {
       "cardTitle": "Updates",
+      "macManualTitle": "macOS — manual download",
+      "macManualBody": "Auto-update is not active for the macOS build yet (it requires code signing). Please download the new version manually from bilgetek.com/maildrop.",
+      "macManualCta": "Open download page",
       "currentVersion": "Current version:",
       "check": "Check",
       "upToDate": "You're on the latest version",
@@ -418,8 +421,18 @@
       "envelope": "Mail envelope (sender/recipient) is invalid.",
       "envelopeHint": "Check the sender and recipient addresses.",
       "unknown": "An unknown error occurred.",
-      "unknownHint": "See the technical message below for details."
-    }
+      "unknownHint": "See the technical message below for details.",
+      "attachmentMissing": "Attachment file not found.",
+      "attachmentMissingHint": "The file you attached to the template has been deleted or moved. Edit the template and re-attach the file."
+    },
+    "dbNotInit": "Database failed to initialize.",
+    "dbNotInitHint": "Restart the app. If the issue persists, share the log file.",
+    "safeStorage": "Password storage unavailable.",
+    "safeStorageHint": "Your operating system's encryption service is disabled. Try restarting the system.",
+    "pathInvalid": "Invalid file path.",
+    "pathInvalidHint": "The file you selected is no longer accessible.",
+    "pathOutside": "Folder not permitted.",
+    "pathOutsideHint": "System folders are blocked. Use Documents/Downloads instead."
   },
 
   "welcome": {
@@ -442,5 +455,12 @@
     "closeIn": "Close ({n})",
     "close": "Close",
     "loading": "Loading…"
+  },
+  "toast": {
+    "smtpDeleteBlocked": "This account is used by existing campaigns. Delete those campaigns from Reports first.",
+    "templateDeleteBlocked": "This template is used by existing campaigns. Delete those campaigns from Reports first.",
+    "attachmentTooLarge": "Attachment is {size} MB — Gmail and Outlook typically reject files larger than 25 MB.",
+    "saved": "Saved",
+    "reportSaved": "Report saved: {path}"
   }
 }

@@ -78,6 +78,17 @@ const migrations: Migration[] = [
       );
       CREATE INDEX IF NOT EXISTS idx_logs_campaign ON campaign_logs(campaign_id);
     `
+  },
+  {
+    version: 2,
+    name: 'campaign_schedule_and_targets',
+    up: `
+      ALTER TABLE campaigns ADD COLUMN scheduled_at TEXT;
+      ALTER TABLE campaigns ADD COLUMN rate_per_second REAL NOT NULL DEFAULT 1;
+      ALTER TABLE campaigns ADD COLUMN target_contact_ids TEXT NOT NULL DEFAULT '[]';
+      CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status);
+      CREATE INDEX IF NOT EXISTS idx_campaigns_scheduled_at ON campaigns(scheduled_at);
+    `
   }
 ]
 

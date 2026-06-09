@@ -8,7 +8,7 @@ interface EditAccountDialogProps {
   account: SmtpAccount | null
   onClose: () => void
   onSave: (id: number, input: Partial<SmtpAccountInput>) => Promise<void>
-  onTest: (input: SmtpAccountInput, sampleTo: string) => Promise<SmtpTestResult>
+  onTest: (input: SmtpAccountInput, sampleTo: string, locale: 'tr' | 'en') => Promise<SmtpTestResult>
 }
 
 function detectPreset(host: string): string {

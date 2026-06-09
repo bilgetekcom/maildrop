@@ -324,6 +324,9 @@
     },
     "updates": {
       "cardTitle": "Güncellemeler",
+      "macManualTitle": "macOS için manuel indirme",
+      "macManualBody": "macOS sürümünde otomatik güncelleme henüz aktif değil (kod imzası gerektirir). Yeni sürümü bilgetek.com/maildrop adresinden manuel olarak indirin.",
+      "macManualCta": "İndirme sayfasını aç",
       "currentVersion": "Mevcut sürüm:",
       "check": "Kontrol et",
       "upToDate": "Güncel sürümü kullanıyorsunuz",
@@ -418,8 +421,18 @@
       "envelope": "Mail zarfı (gönderen/alıcı) geçersiz.",
       "envelopeHint": "Gönderen ve alıcı adreslerini kontrol edin.",
       "unknown": "Bilinmeyen bir hata oluştu.",
-      "unknownHint": "Detaylı bilgi için aşağıdaki teknik mesaja bakabilirsiniz."
-    }
+      "unknownHint": "Detaylı bilgi için aşağıdaki teknik mesaja bakabilirsiniz.",
+      "attachmentMissing": "Ek dosya bulunamadı.",
+      "attachmentMissingHint": "Şablona eklediğiniz dosya silinmiş veya taşınmış. Şablonu düzenleyip dosyayı yeniden ekleyin."
+    },
+    "dbNotInit": "Veritabanı başlatılamadı.",
+    "dbNotInitHint": "Uygulamayı yeniden başlatın. Sorun devam ederse log dosyasını paylaşın.",
+    "safeStorage": "Şifre alanı kullanılamıyor.",
+    "safeStorageHint": "İşletim sistemi şifreleme servisi devre dışı. Sistemi yeniden başlatmayı deneyin.",
+    "pathInvalid": "Dosya yolu geçersiz.",
+    "pathInvalidHint": "Seçtiğiniz dosya artık erişilebilir değil.",
+    "pathOutside": "İzin verilmeyen klasör.",
+    "pathOutsideHint": "Sistem klasörlerine erişim engellendi. Belgeler/İndirilenler klasörünü kullanın."
   },
 
   "welcome": {
@@ -442,5 +455,12 @@
     "closeIn": "Kapat ({n})",
     "close": "Kapat",
     "loading": "Yükleniyor…"
+  },
+  "toast": {
+    "smtpDeleteBlocked": "Bu hesabı kullanan kampanyalar var. Önce raporlardan ilgili kampanyaları silin.",
+    "templateDeleteBlocked": "Bu şablonu kullanan kampanyalar var. Önce raporlardan ilgili kampanyaları silin.",
+    "attachmentTooLarge": "Ek dosya {size} MB — Gmail ve Outlook genellikle 25 MB üstünü reddeder.",
+    "saved": "Kaydedildi",
+    "reportSaved": "Rapor kaydedildi: {path}"
   }
 }

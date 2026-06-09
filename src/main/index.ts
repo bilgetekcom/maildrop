@@ -6,7 +6,11 @@ import { setupAutoUpdater, registerUpdaterHandlers, startBackgroundCheck } from 
 import { registerSmtpHandlers } from './ipc/smtp'
 import { registerContactHandlers } from './ipc/contacts'
 import { registerTemplateHandlers } from './ipc/templates'
-import { registerCampaignHandlers } from './ipc/campaigns'
+import {
+  registerCampaignHandlers,
+  recoverCampaignsOnStartup,
+  hasActiveSendingCampaign
+} from './ipc/campaigns'
 import { registerReportHandlers } from './ipc/reports'
 import { initDatabase } from './db'
 
@@ -42,8 +46,30 @@ function createWindow(): BrowserWindow {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    try {
+      const u = new URL(details.url)
+      if (u.protocol === 'https:' || u.protocol === 'http:' || u.protocol === 'mailto:') {
+        shell.openExternal(details.url)
+      }
+    } catch {
+      /* invalid URL, drop */
+    }
     return { action: 'deny' }
+  })
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (process.env['ELECTRON_RENDERER_URL'] && url.startsWith(process.env['ELECTRON_RENDERER_URL'])) {
+      return
+    }
+    event.preventDefault()
+    try {
+      const u = new URL(url)
+      if (u.protocol === 'https:' || u.protocol === 'http:' || u.protocol === 'mailto:') {
+        shell.openExternal(url)
+      }
+    } catch {
+      /* drop */
+    }
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -65,6 +91,7 @@ app.whenReady().then(() => {
   })
 
   initDatabase()
+  recoverCampaignsOnStartup()
 
   registerSmtpHandlers(ipcMain)
   registerContactHandlers(ipcMain)
@@ -73,6 +100,8 @@ app.whenReady().then(() => {
   registerReportHandlers(ipcMain)
   registerUpdaterHandlers(ipcMain)
   setupAutoUpdater()
+
+  ipcMain.handle('app:hasActiveSending', () => hasActiveSendingCampaign())
 
   createWindow()
   if (!is.dev) startBackgroundCheck()

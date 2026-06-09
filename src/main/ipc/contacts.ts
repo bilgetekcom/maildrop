@@ -2,7 +2,8 @@ import type { IpcMain } from 'electron'
 import { dialog } from 'electron'
 import { getDb } from '../db'
 import type { Contact, ContactGroup } from '../../shared/types'
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
+import { assertSafePath } from '../lib/path-guard'
 
 function rowToContact(r: Record<string, unknown>): Contact {
   return {
@@ -18,7 +19,34 @@ function rowToContact(r: Record<string, unknown>): Contact {
 }
 
 export function registerContactHandlers(ipc: IpcMain): void {
-  ipc.handle('contacts:list', (_, search?: string, groupId?: number | null) => {
+  ipc.handle(
+    'contacts:list',
+    (_, search?: string, groupId?: number | null, limit?: number, offset?: number) => {
+      const db = getDb()
+      const where: string[] = []
+      const vals: unknown[] = []
+      if (search) {
+        where.push('(first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR company LIKE ?)')
+        const q = `%${search}%`
+        vals.push(q, q, q, q)
+      }
+      if (groupId) {
+        where.push('group_id = ?')
+        vals.push(groupId)
+      }
+      const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : ''
+      const safeLimit = Math.min(Math.max(Number(limit) || 500, 1), 5000)
+      const safeOffset = Math.max(Number(offset) || 0, 0)
+      const sql = `SELECT * FROM contacts ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`
+      vals.push(safeLimit, safeOffset)
+      return db
+        .prepare<unknown[], Record<string, unknown>>(sql)
+        .all(...vals)
+        .map(rowToContact)
+    }
+  )
+
+  ipc.handle('contacts:count', (_, search?: string, groupId?: number | null): number => {
     const db = getDb()
     const where: string[] = []
     const vals: unknown[] = []
@@ -27,9 +55,13 @@ export function registerContactHandlers(ipc: IpcMain): void {
       const q = `%${search}%`
       vals.push(q, q, q, q)
     }
-    if (groupId) { where.push('group_id = ?'); vals.push(groupId) }
-    const sql = `SELECT * FROM contacts ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY id DESC`
-    return db.prepare<unknown[], Record<string, unknown>>(sql).all(...vals).map(rowToContact)
+    if (groupId) {
+      where.push('group_id = ?')
+      vals.push(groupId)
+    }
+    const sql = `SELECT COUNT(*) AS n FROM contacts ${where.length ? 'WHERE ' + where.join(' AND ') : ''}`
+    const row = db.prepare<unknown[], { n: number }>(sql).get(...vals)
+    return row?.n ?? 0
   })
 
   ipc.handle('contacts:create', (_, input: Omit<Contact, 'id' | 'createdAt'>): Contact => {
@@ -74,21 +106,59 @@ export function registerContactHandlers(ipc: IpcMain): void {
     db.transaction(() => ids.forEach((id) => stmt.run(id)))()
   })
 
-  ipc.handle('contacts:previewExcel', (_, filePath: string) => {
-    const wb = XLSX.readFile(filePath)
-    const sheet = wb.Sheets[wb.SheetNames[0]]
-    const rows = XLSX.utils.sheet_to_json<string[]>(sheet, { header: 1 }) as string[][]
-    if (!rows.length) return { headers: [], sample: [] }
-    return { headers: rows[0].map((h) => String(h)), sample: rows.slice(1, 6) }
+  ipc.handle('contacts:previewExcel', async (_, filePath: string) => {
+    const safe = assertSafePath(filePath)
+    const wb = new ExcelJS.Workbook()
+    if (/\.csv$/i.test(safe)) {
+      await wb.csv.readFile(safe)
+    } else {
+      await wb.xlsx.readFile(safe)
+    }
+    const ws = wb.worksheets[0]
+    if (!ws || ws.rowCount === 0) return { headers: [], sample: [] }
+    const cellsToArray = (vals: unknown): string[] => {
+      const arr = (Array.isArray(vals) ? vals.slice(1) : []) as unknown[]
+      return arr.map((v) => (v == null ? '' : String(v)))
+    }
+    const headers = cellsToArray(ws.getRow(1).values)
+    const sample: string[][] = []
+    for (let i = 2; i <= Math.min(6, ws.rowCount); i++) {
+      sample.push(cellsToArray(ws.getRow(i).values))
+    }
+    return { headers, sample }
   })
 
   ipc.handle(
     'contacts:importExcel',
-    (_, filePath: string, mapping: Record<string, string>): { inserted: number; duplicates: string[] } => {
+    async (
+      _,
+      filePath: string,
+      mapping: Record<string, string>
+    ): Promise<{ inserted: number; duplicates: string[] }> => {
       const db = getDb()
-      const wb = XLSX.readFile(filePath)
-      const sheet = wb.Sheets[wb.SheetNames[0]]
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet)
+      const safe = assertSafePath(filePath)
+      const wb = new ExcelJS.Workbook()
+      if (/\.csv$/i.test(safe)) {
+        await wb.csv.readFile(safe)
+      } else {
+        await wb.xlsx.readFile(safe)
+      }
+      const ws = wb.worksheets[0]
+      if (!ws || ws.rowCount < 2) {
+        return { inserted: 0, duplicates: [] }
+      }
+      const rawHeaders = ws.getRow(1).values
+      const headers: string[] = []
+      if (Array.isArray(rawHeaders)) {
+        for (let i = 1; i < rawHeaders.length; i++) {
+          headers.push(rawHeaders[i] == null ? '' : String(rawHeaders[i]))
+        }
+      }
+      // Map: header name -> column index (1-based as ExcelJS uses)
+      const headerIdx: Record<string, number> = {}
+      headers.forEach((h, i) => {
+        if (h) headerIdx[h] = i + 1
+      })
 
       const insert = db.prepare(
         `INSERT INTO contacts (first_name, last_name, email, company, custom_fields)
@@ -99,18 +169,35 @@ export function registerContactHandlers(ipc: IpcMain): void {
       const duplicates: string[] = []
       let inserted = 0
 
+      function cellValue(row: ExcelJS.Row, colHeader: string | undefined): string {
+        if (!colHeader) return ''
+        const ci = headerIdx[colHeader]
+        if (!ci) return ''
+        const v = row.getCell(ci).value
+        if (v == null) return ''
+        if (typeof v === 'object' && 'text' in (v as { text?: string })) {
+          return String((v as { text: string }).text)
+        }
+        if (typeof v === 'object' && 'result' in (v as { result?: unknown })) {
+          return String((v as { result?: unknown }).result ?? '')
+        }
+        return String(v)
+      }
+
       db.transaction(() => {
-        for (const row of rows) {
-          const emailCol = mapping.email
-          const email = emailCol ? String(row[emailCol] ?? '').trim() : ''
+        for (let r = 2; r <= ws.rowCount; r++) {
+          const row = ws.getRow(r)
+          const email = cellValue(row, mapping.email).trim()
           if (!email) continue
-          const firstName = mapping.firstName ? String(row[mapping.firstName] ?? '') : ''
-          const lastName = mapping.lastName ? String(row[mapping.lastName] ?? '') : ''
-          const company = mapping.company ? String(row[mapping.company] ?? '') : null
+          const firstName = cellValue(row, mapping.firstName)
+          const lastName = cellValue(row, mapping.lastName)
+          const companyRaw = cellValue(row, mapping.company)
+          const company = companyRaw || null
           const custom: Record<string, string> = {}
           for (const [field, col] of Object.entries(mapping)) {
             if (['firstName', 'lastName', 'email', 'company'].includes(field)) continue
-            if (row[col] !== undefined) custom[field] = String(row[col])
+            const val = cellValue(row, col)
+            if (val) custom[field] = val
           }
           const result = insert.run(firstName, lastName, email, company, JSON.stringify(custom))
           if (result.changes > 0) inserted++
@@ -122,15 +209,24 @@ export function registerContactHandlers(ipc: IpcMain): void {
     }
   )
 
-  ipc.handle('contacts:exportExcel', (_, path: string, groupId?: number | null) => {
+  ipc.handle('contacts:exportExcel', async (_, path: string, groupId?: number | null) => {
+    const safe = assertSafePath(path)
     const db = getDb()
-    const rows = groupId
-      ? db.prepare('SELECT * FROM contacts WHERE group_id = ?').all(groupId)
-      : db.prepare('SELECT * FROM contacts').all()
-    const wb = XLSX.utils.book_new()
-    const ws = XLSX.utils.json_to_sheet(rows)
-    XLSX.utils.book_append_sheet(wb, ws, 'Kişiler')
-    XLSX.writeFile(wb, path)
+    const rows = (
+      groupId
+        ? db.prepare('SELECT * FROM contacts WHERE group_id = ?').all(groupId)
+        : db.prepare('SELECT * FROM contacts').all()
+    ) as Record<string, unknown>[]
+    const wb = new ExcelJS.Workbook()
+    const ws = wb.addWorksheet('Kişiler')
+    if (rows.length > 0) {
+      const cols = Object.keys(rows[0])
+      ws.columns = cols.map((c) => ({ header: c, key: c, width: 18 }))
+      for (const row of rows) {
+        ws.addRow(row)
+      }
+    }
+    await wb.xlsx.writeFile(safe)
   })
 
   ipc.handle('dialog:openExcel', async (): Promise<string | null> => {

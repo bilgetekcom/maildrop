@@ -16,7 +16,16 @@ function resolveAdsBaseUrl(): string {
 }
 
 const APP_NAME = 'maildrop'
-const APP_VERSION = '0.1.0'
+let cachedVersion: string | null = null
+async function getAppVersion(): Promise<string> {
+  if (cachedVersion) return cachedVersion
+  try {
+    cachedVersion = await window.api.updater.currentVersion()
+    return cachedVersion
+  } catch {
+    return '0.0.0'
+  }
+}
 const CACHE_KEY = 'maildrop:promotions_cache'
 const APP_OPEN_KEY = 'maildrop:app_open_count'
 const SEEN_KEY_PREFIX = 'maildrop:promo_seen:'
@@ -59,7 +68,7 @@ export async function fetchPromotions(locale: string): Promise<PromotionsRespons
     const url = new URL(resolveAdsBaseUrl())
     url.searchParams.set('app', APP_NAME)
     url.searchParams.set('locale', locale)
-    url.searchParams.set('version', APP_VERSION)
+    url.searchParams.set('version', await getAppVersion())
     url.searchParams.set('platform', getPlatform())
 
     const resp = await fetch(url.toString(), {

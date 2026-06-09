@@ -46,9 +46,18 @@ function sendToRenderer(channel: string, payload: unknown): void {
   }
 }
 
+/**
+ * macOS auto-update via electron-updater requires a signed + notarized app.
+ * Without code signing the dmg/zip update path silently fails. We still let
+ * renderer call `check` so the UI can tell the user there is a newer version,
+ * but we never try to download — we open the bilgetek.com landing page so the
+ * user can grab the signed-when-available installer manually.
+ */
+const isMac = process.platform === 'darwin'
+
 export function setupAutoUpdater(): void {
   autoUpdater.autoDownload = false
-  autoUpdater.autoInstallOnAppQuit = true
+  autoUpdater.autoInstallOnAppQuit = !isMac
   autoUpdater.logger = console
 
   autoUpdater.on('checking-for-update', () => {
@@ -107,6 +116,9 @@ export function registerUpdaterHandlers(ipc: IpcMain): void {
 
   ipc.removeHandler('updater:download')
   ipc.handle('updater:download', async () => {
+    if (isMac) {
+      return { ok: false, error: 'mac_manual_download', currentVersion: app.getVersion() }
+    }
     try {
       await autoUpdater.downloadUpdate()
       return { ok: true }
@@ -131,3 +143,8 @@ export function startBackgroundCheck(): void {
     })
   }, 5000)
 }
+
+export function isMacOS(): boolean {
+  return isMac
+}
+

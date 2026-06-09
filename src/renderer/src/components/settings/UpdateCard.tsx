@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { RefreshCw, Download, CheckCircle2, Loader2, Sparkles } from 'lucide-react'
+import { RefreshCw, Download, CheckCircle2, Loader2, Sparkles, ExternalLink } from 'lucide-react'
 import { useUpdaterStore } from '../../store/updater'
 import { useT } from '../../i18n'
 import { Button } from '../ui/button'
@@ -10,6 +10,10 @@ export function UpdateCard(): JSX.Element {
   const { t } = useT()
   const { status, currentVersion, available, progress, error, init, check, download, install } =
     useUpdaterStore()
+
+  const isMac =
+    typeof navigator !== 'undefined' &&
+    /mac|darwin/i.test(navigator.platform || navigator.userAgent || '')
 
   useEffect(() => {
     void init()
@@ -62,10 +66,22 @@ export function UpdateCard(): JSX.Element {
                 </pre>
               </details>
             )}
-            <Button onClick={download}>
-              <Download className="h-4 w-4" />
-              {t('settings.updates.download')}
-            </Button>
+            {isMac ? (
+              <div className="space-y-2">
+                <p className="text-xs">{t('settings.updates.macManualBody')}</p>
+                <Button
+                  onClick={() => window.api.appLifecycle.openExternal('https://bilgetek.com/maildrop')}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  {t('settings.updates.macManualCta')}
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={download}>
+                <Download className="h-4 w-4" />
+                {t('settings.updates.download')}
+              </Button>
+            )}
           </Alert>
         )}
 

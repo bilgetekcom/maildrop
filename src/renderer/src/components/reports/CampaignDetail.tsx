@@ -5,6 +5,8 @@ import { useCampaignsStore } from '../../store/campaigns'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { useT } from '../../i18n'
+import { translateLogMessage } from '../../lib/error-i18n'
+import { useToast } from '../ui/toast'
 
 interface CampaignDetailProps {
   campaign: Campaign
@@ -13,6 +15,7 @@ interface CampaignDetailProps {
 
 export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.Element {
   const { t } = useT()
+  const toast = useToast()
   const { logs, retryFailed, refresh } = useCampaignsStore()
   const [items, setItems] = useState<CampaignLog[]>([])
   const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all')
@@ -28,7 +31,7 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
 
   async function handleExport(): Promise<void> {
     const path = await window.api.reports.exportCampaign(campaign.id)
-    if (path) alert(t('reports.detail.exportSaved', { path }))
+    if (path) toast.push(t('toast.reportSaved', { path }), 'success')
   }
 
   async function handleRetry(): Promise<void> {
@@ -158,7 +161,7 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
                       </td>
                       <td className="px-3 py-2">{l.email}</td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">
-                        {l.errorMsg ?? '—'}
+                        {l.errorMsg ? translateLogMessage(l.errorMsg, t) : '—'}
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">
                         {new Date(l.sentAt).toLocaleString()}

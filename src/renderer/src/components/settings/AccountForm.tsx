@@ -9,6 +9,7 @@ import { Select } from '../ui/select'
 import { Switch } from '../ui/switch'
 import { Alert } from '../ui/alert'
 import { useT } from '../../i18n'
+import { translateSmtpResult } from '../../lib/error-i18n'
 
 interface AccountFormProps {
   initial?: Partial<SmtpAccountInput> & { presetId?: string }
@@ -16,7 +17,7 @@ interface AccountFormProps {
   passwordPlaceholder?: string
   submitLabel: string
   onSubmit: (input: SmtpAccountInput) => Promise<void>
-  onTest: (input: SmtpAccountInput, sampleTo: string) => Promise<SmtpTestResult>
+  onTest: (input: SmtpAccountInput, sampleTo: string, locale: 'tr' | 'en') => Promise<SmtpTestResult>
 }
 
 export function AccountForm({
@@ -27,7 +28,7 @@ export function AccountForm({
   onSubmit,
   onTest
 }: AccountFormProps): JSX.Element {
-  const { t } = useT()
+  const { t, locale } = useT()
   const [presetId, setPresetId] = useState(initial?.presetId ?? 'gmail')
   const preset = findPreset(presetId)
 
@@ -84,8 +85,12 @@ export function AccountForm({
     setTesting(true)
     setFeedback(null)
     try {
-      const result = await onTest(buildInput(), user.trim())
-      setFeedback({ variant: result.ok ? 'success' : 'error', message: result.message })
+      const result = await onTest(buildInput(), user.trim(), locale)
+      const translated = translateSmtpResult(result.code, result.raw, t)
+      setFeedback({
+        variant: translated.ok ? 'success' : 'error',
+        message: translated.message
+      })
     } catch (e) {
       setFeedback({ variant: 'error', message: (e as Error).message })
     } finally {

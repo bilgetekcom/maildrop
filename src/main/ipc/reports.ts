@@ -1,6 +1,6 @@
 import type { IpcMain } from 'electron'
 import { dialog } from 'electron'
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 import { getDb } from '../db'
 
 export function registerReportHandlers(ipc: IpcMain): void {
@@ -29,30 +29,45 @@ export function registerReportHandlers(ipc: IpcMain): void {
     })
     if (r.canceled || !r.filePath) return null
 
-    const summary = [
-      ['Kampanya', campaign.name],
-      ['Toplam', campaign.total],
-      ['Başarılı', campaign.sent],
-      ['Başarısız', campaign.failed],
-      ['Durum', campaign.status],
-      ['Başlangıç', campaign.started_at],
-      ['Bitiş', campaign.finished_at]
+    const wb = new ExcelJS.Workbook()
+    const summary = wb.addWorksheet('Özet')
+    summary.columns = [
+      { header: 'Alan', key: 'k', width: 14 },
+      { header: 'Değer', key: 'v', width: 40 }
     ]
+    summary.addRows([
+      { k: 'Kampanya', v: campaign.name },
+      { k: 'Toplam', v: campaign.total },
+      { k: 'Başarılı', v: campaign.sent },
+      { k: 'Başarısız', v: campaign.failed },
+      { k: 'Durum', v: campaign.status },
+      { k: 'Başlangıç', v: campaign.started_at },
+      { k: 'Bitiş', v: campaign.finished_at }
+    ])
 
-    const detail = logs.map((l) => ({
-      Ad: l.first_name,
-      Soyad: l.last_name,
-      Firma: l.company,
-      Email: l.email,
-      Durum: l.status === 'success' ? 'Başarılı' : 'Başarısız',
-      Hata: l.error_msg ?? '',
-      Tarih: l.sent_at
-    }))
+    const detail = wb.addWorksheet('Detay')
+    detail.columns = [
+      { header: 'Ad', key: 'firstName', width: 18 },
+      { header: 'Soyad', key: 'lastName', width: 18 },
+      { header: 'Firma', key: 'company', width: 22 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Durum', key: 'status', width: 12 },
+      { header: 'Hata', key: 'error', width: 40 },
+      { header: 'Tarih', key: 'sentAt', width: 22 }
+    ]
+    for (const l of logs) {
+      detail.addRow({
+        firstName: l.first_name,
+        lastName: l.last_name,
+        company: l.company,
+        email: l.email,
+        status: l.status === 'success' ? 'Başarılı' : 'Başarısız',
+        error: l.error_msg ?? '',
+        sentAt: l.sent_at
+      })
+    }
 
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), 'Özet')
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(detail), 'Detay')
-    XLSX.writeFile(wb, r.filePath)
+    await wb.xlsx.writeFile(r.filePath)
     return r.filePath
   })
 

@@ -2,6 +2,7 @@ import type { IpcMain } from 'electron'
 import { dialog } from 'electron'
 import { getDb } from '../db'
 import type { Template } from '../../shared/types'
+import { assertSafePath } from '../lib/path-guard'
 
 function extractVariables(text: string): string[] {
   const regex = /\{\{\s*([\w]+)\s*\}\}/g
@@ -42,13 +43,14 @@ export function registerTemplateHandlers(ipc: IpcMain): void {
     'templates:create',
     (_, input: { name: string; subject: string; bodyHtml: string; attachmentPath: string | null }): Template => {
       const db = getDb()
+      const safeAttach = input.attachmentPath ? assertSafePath(input.attachmentPath) : null
       const vars = JSON.stringify(extractVariables(input.subject + ' ' + input.bodyHtml))
       const result = db
         .prepare(
           `INSERT INTO templates (name, subject, body_html, variables, attachment_path)
            VALUES (?, ?, ?, ?, ?)`
         )
-        .run(input.name, input.subject, input.bodyHtml, vars, input.attachmentPath)
+        .run(input.name, input.subject, input.bodyHtml, vars, safeAttach)
       const row = db.prepare('SELECT * FROM templates WHERE id = ?').get(result.lastInsertRowid) as Record<string, unknown>
       return rowToTemplate(row)
     }
@@ -61,7 +63,10 @@ export function registerTemplateHandlers(ipc: IpcMain): void {
     if (input.name !== undefined) { sets.push('name = ?'); vals.push(input.name) }
     if (input.subject !== undefined) { sets.push('subject = ?'); vals.push(input.subject) }
     if (input.bodyHtml !== undefined) { sets.push('body_html = ?'); vals.push(input.bodyHtml) }
-    if (input.attachmentPath !== undefined) { sets.push('attachment_path = ?'); vals.push(input.attachmentPath) }
+    if (input.attachmentPath !== undefined) {
+      sets.push('attachment_path = ?')
+      vals.push(input.attachmentPath ? assertSafePath(input.attachmentPath) : null)
+    }
     if (input.subject !== undefined || input.bodyHtml !== undefined) {
       const current = db.prepare('SELECT subject, body_html FROM templates WHERE id = ?').get(id) as {
         subject: string
@@ -87,12 +92,32 @@ export function registerTemplateHandlers(ipc: IpcMain): void {
     const db = getDb()
     const tpl = rowToTemplate(db.prepare('SELECT * FROM templates WHERE id = ?').get(id) as Record<string, unknown>)
     const contact = db.prepare('SELECT * FROM contacts WHERE id = ?').get(contactId) as Record<string, unknown>
+    const firstName = (contact.first_name as string) || ''
+    const lastName = (contact.last_name as string) || ''
+    const email = (contact.email as string) || ''
+    const company = (contact.company as string) || ''
+    let custom: Record<string, string> = {}
+    try {
+      custom = JSON.parse((contact.custom_fields as string) || '{}')
+    } catch {
+      custom = {}
+    }
     const merged: Record<string, string> = {
-      Ad: (contact.first_name as string) || '',
-      Soyad: (contact.last_name as string) || '',
-      Email: (contact.email as string) || '',
-      Firma: (contact.company as string) || '',
-      ...JSON.parse((contact.custom_fields as string) || '{}')
+      Ad: firstName,
+      Soyad: lastName,
+      Email: email,
+      Firma: company,
+      FirstName: firstName,
+      LastName: lastName,
+      Company: company,
+      ad: firstName,
+      soyad: lastName,
+      email,
+      firma: company,
+      firstname: firstName,
+      lastname: lastName,
+      company,
+      ...custom
     }
     const render = (s: string): string =>
       s.replace(/\{\{\s*([\w]+)\s*\}\}/g, (_, k) => (merged[k] !== undefined ? merged[k] : ''))
@@ -105,5 +130,16 @@ export function registerTemplateHandlers(ipc: IpcMain): void {
       properties: ['openFile']
     })
     return r.canceled || !r.filePaths[0] ? null : r.filePaths[0]
+  })
+
+  ipc.handle('dialog:statFile', async (_, filePath: string) => {
+    const { statSync } = await import('fs')
+    try {
+      const safe = assertSafePath(filePath)
+      const s = statSync(safe)
+      return { size: s.size, sizeMB: Math.round((s.size / 1024 / 1024) * 10) / 10 }
+    } catch {
+      return null
+    }
   })
 }

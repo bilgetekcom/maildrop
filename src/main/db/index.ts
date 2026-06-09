@@ -3,6 +3,7 @@ import Database from 'better-sqlite3'
 import { join } from 'path'
 import { mkdirSync } from 'fs'
 import { runMigrations } from './migrations'
+import { ERR } from '../../shared/errors'
 
 let db: Database.Database | null = null
 
@@ -23,20 +24,20 @@ export function initDatabase(): Database.Database {
 }
 
 export function getDb(): Database.Database {
-  if (!db) throw new Error('Veritabanı başlatılmadı.')
+  if (!db) throw new Error(ERR.DB_NOT_INIT)
   return db
 }
 
 export function encryptSecret(plain: string): string {
   if (!safeStorage.isEncryptionAvailable()) {
-    throw new Error('İşletim sistemi şifreleme servisi kullanılamıyor.')
+    throw new Error(ERR.SAFE_STORAGE_UNAVAILABLE)
   }
   return safeStorage.encryptString(plain).toString('base64')
 }
 
 export function decryptSecret(encoded: string): string {
   if (!safeStorage.isEncryptionAvailable()) {
-    throw new Error('İşletim sistemi şifreleme servisi kullanılamıyor.')
+    throw new Error(ERR.SAFE_STORAGE_UNAVAILABLE)
   }
   return safeStorage.decryptString(Buffer.from(encoded, 'base64'))
 }
