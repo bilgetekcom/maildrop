@@ -18,6 +18,9 @@ tests/screenshots/
 # Misc
 .cache/
 
+# Internal docs (not for public)
+docs/MailDrop_PRD_*.docx
+
 # Local env
 .env
 .env.local

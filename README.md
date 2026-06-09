@@ -86,6 +86,6 @@ MailDrop/
 
 MIT. Detaylar için [LICENSE](LICENSE).
 
-## Bilgetek Ekosistemi
+## Bilgetek
 
 MailDrop, [Bilgetek](https://bilgetek.com) tarafından geliştirilen ücretsiz ve açık kaynak bir uygulamadır. Aynı ekibin diğer ürünlerini [bilgetek.com](https://bilgetek.com) üzerinde bulabilirsiniz.

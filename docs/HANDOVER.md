@@ -109,6 +109,6 @@ npm run build:mac        # universal dmg
 - Code signing: Sprint 7 öncesi karar (sertifika maliyeti, EV vs OV).
 - Landing: `bilgetek.com/maildrop`. CTA: "Ücretsiz indir" + "BulkPro'ya bakın".
 
-## Bilgetek Ekosistemi Bağı
+## Bilgetek bağlantıları
 
 MailDrop ücretsiz ve açık kaynak. Bilgetek tarafından sunulan diğer ürünlerle uygun yerlerde (footer, çıkış tanıtımı) çapraz bağlantılar var. Tracking pixel YOK (PRD §6.4 kapsam dışı).
