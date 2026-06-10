@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Plus, Mail } from 'lucide-react'
 import { useSmtpStore } from '../store/smtp'
-import { usePreferencesStore } from '../store/preferences'
 import type { SmtpAccount } from '../../../shared/types'
 import { AccountCard } from '../components/settings/AccountCard'
 import { AccountForm } from '../components/settings/AccountForm'
@@ -9,7 +8,6 @@ import { EditAccountDialog } from '../components/settings/EditAccountDialog'
 import { UpdateCard } from '../components/settings/UpdateCard'
 import { Button } from '../components/ui/button'
 import { Select } from '../components/ui/select'
-import { Switch } from '../components/ui/switch'
 import { Label } from '../components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { useT, SUPPORTED_LOCALES, type Locale } from '../i18n'
@@ -19,7 +17,6 @@ export function Settings(): JSX.Element {
   const { t, locale, setLocale } = useT()
   const toast = useToast()
   const { accounts, loading, refresh, create, update, remove, setDefault, test } = useSmtpStore()
-  const { promotionsEnabled, togglePromotions } = usePreferencesStore()
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<SmtpAccount | null>(null)
 
@@ -80,21 +77,6 @@ export function Settings(): JSX.Element {
         </Card>
 
         <UpdateCard />
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.promotions.cardTitle')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Switch
-              id="promotions-enabled"
-              checked={promotionsEnabled}
-              onChange={(e) => togglePromotions(e.target.checked)}
-              label={t('settings.promotions.label')}
-            />
-            <p className="mt-2 text-xs text-muted-foreground">{t('settings.promotions.hint')}</p>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0">

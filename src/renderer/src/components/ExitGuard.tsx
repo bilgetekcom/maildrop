@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useT } from '../i18n'
-import { usePreferencesStore } from '../store/preferences'
 import {
   fetchPromotions,
   incrementAppOpenCount,
@@ -12,7 +11,6 @@ import { ExitPromotionModal } from './ExitPromotionModal'
 
 export function ExitGuard(): JSX.Element {
   const { locale } = useT()
-  const { promotionsEnabled } = usePreferencesStore()
   const [activePromo, setActivePromo] = useState<ResolvedPromotion | null>(null)
   const [allPromos, setAllPromos] = useState<ResolvedPromotion[]>([])
   const [appOpenCount, setAppOpenCount] = useState(0)
@@ -23,15 +21,11 @@ export function ExitGuard(): JSX.Element {
   }, [])
 
   useEffect(() => {
-    if (!promotionsEnabled) {
-      setAllPromos([])
-      return
-    }
     void (async () => {
       const resp = await fetchPromotions(locale)
       if (resp) setAllPromos(resp.promotions)
     })()
-  }, [locale, promotionsEnabled])
+  }, [locale])
 
   useEffect(() => {
     const unsub = window.api.appLifecycle.onBeforeClose(async () => {
@@ -48,7 +42,7 @@ export function ExitGuard(): JSX.Element {
           return
         }
       }
-      if (!promotionsEnabled || allPromos.length === 0) {
+      if (allPromos.length === 0) {
         await window.api.appLifecycle.confirmClose()
         return
       }
@@ -61,7 +55,7 @@ export function ExitGuard(): JSX.Element {
       setActivePromo(pick)
     })
     return unsub
-  }, [allPromos, appOpenCount, promotionsEnabled, locale])
+  }, [allPromos, appOpenCount, locale])
 
   async function handleClose(): Promise<void> {
     setActivePromo(null)

@@ -78,7 +78,7 @@ MailDrop/
 
 - **Tüm verileriniz** (kişiler, şablonlar, SMTP şifreleri) bilgisayarınızda kalır. Hiçbir bilgi sunucumuza yüklenmez.
 - **SMTP şifreniz** işletim sisteminizin güvenli alanında (Windows DPAPI / macOS Keychain) şifrelenir.
-- **Tanıtım önerileri:** Uygulama açıldığında bir kez `https://app.bilgetek.com/api/promotions` adresinden anonim olarak tanıtım içeriklerini çeker (6 saat cache). Bu istekte yalnızca uygulamanın adı, sürümü, dil seçimi ve işletim sistemi gönderilir. Kişisel veri, kişi listeniz, e-posta adresleriniz veya kullanım istatistikleriniz **gönderilmez**. Ayarlar sayfasından bu özelliği tamamen kapatabilirsiniz.
+- **Tanıtım önerileri:** Uygulama açıldığında bir kez `https://app.bilgetek.com/api/promotions` adresinden anonim olarak tanıtım içeriklerini çeker (6 saat cache). Bu istekte yalnızca uygulamanın adı, sürümü, dil seçimi ve işletim sistemi gönderilir. Kişisel veri, kişi listeniz, e-posta adresleriniz veya kullanım istatistikleriniz **gönderilmez**.
 - Telemetry, tracking pixel veya kullanım analytics **yoktur**.
 - Kodun tamamı [açık kaynaktır](https://github.com/bilgetekcom/maildrop), kendi gözlerinizle inceleyebilirsiniz.
 

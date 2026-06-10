@@ -97,7 +97,7 @@ export function ExitPromotionModal({ promo, onClose }: ExitPromotionModalProps):
             {secondary && (
               <Button
                 variant="ghost"
-                onClick={onClose}
+                onClick={() => handleCta(secondary.url)}
                 disabled={!canClose}
                 className={cn(!canClose && 'opacity-50')}
               >
