@@ -29,7 +29,9 @@
     "help": "Yardım",
     "maybeLater": "Belki sonra",
     "noContent": "—",
-    "test": "Test Et"
+    "test": "Test Et",
+    "clear": "Temizle",
+    "select": "Seç"
   },
 
   "nav": {
@@ -159,6 +161,15 @@
       "removeAttachment": "Eki kaldır",
       "importHtml": "HTML içe aktar",
       "linkPrompt": "Bağlantı adresi (boş bırakırsanız kaldırılır):",
+      "hintsTitle": "İçerik İpuçları",
+      "hintsClean": "Bu şablon spam filtreleri için temiz görünüyor.",
+      "hints": {
+        "subjectAllCaps": "Konu satırı tamamen büyük harf — spam filtrelerini tetikler.",
+        "manyExclamations": "Konu satırında çok fazla ünlem var. 1-2 ünlem yeterli.",
+        "subjectTooLong": "Konu satırı {n} karakter. 60 karakter altı önerilir.",
+        "triggerWords": "Bu kelimeler spam filtrelerini tetikleyebilir: {words}.",
+        "imageOnly": "Mail neredeyse sadece görseldir. Spam'e düşme riski yüksek, biraz metin ekleyin."
+      },
       "toolbar": {
         "undo": "Geri al",
         "redo": "İleri al",
@@ -190,6 +201,27 @@
       "toLabel": "Kime",
       "empty": "(boş)",
       "draftNote": "Henüz kaydedilmemiş bir şablonun önizlemesi gösteriliyor."
+    },
+    "library": {
+      "openCta": "Kütüphaneden seç",
+      "title": "Şablon kütüphanesi",
+      "subtitle": "Hazır şablonlar arasından seçin, kendi listenize kopyalayın ve düzenleyin.",
+      "categories": "Kategoriler",
+      "all": "Tümü",
+      "preview": "Önizleme",
+      "copy": "Kütüphaneye Ekle",
+      "copied": "Şablonun bir kopyası eklendi.",
+      "category": {
+        "welcome": "Hoş Geldin",
+        "announcement": "Duyuru / Bilgilendirme",
+        "promotion": "Promosyon / Kampanya",
+        "event": "Etkinlik",
+        "newsletter": "Newsletter",
+        "crm": "Müşteri İlişkileri",
+        "b2b": "B2B / Outreach",
+        "education": "Eğitim / Kurs",
+        "ngo": "STK / Bağış"
+      }
     }
   },
 
@@ -223,6 +255,12 @@
       "cardTitle": "Gönderim ayarları",
       "campaignName": "Kampanya adı (opsiyonel)",
       "fromAccount": "Gönderen hesap",
+      "usePoolLabel": "Birden fazla hesap kullan (havuz)",
+      "usePoolHint": "Birden fazla SMTP hesabını rotasyonla kullanırsanız spam filtrelerine takılma riski azalır. Her hesabın günlük limiti ve cooldown'u tek tek uygulanır.",
+      "poolAccounts": "Havuz hesapları (en az 2)",
+      "poolMinHint": "Havuz için en az 2 hesap seçmelisiniz.",
+      "replyTo": "Yanıtla (Reply-To, opsiyonel)",
+      "replyToHint": "Kullanıcı mail'e cevap verirse bu adrese gider. Boş bırakırsanız gönderen adresine cevap gider.",
       "rate": "Saniyede mail sayısı",
       "rateOptions": {
         "half": "0.5 (her 2 saniyede 1 — en güvenli)",
@@ -230,7 +268,10 @@
         "two": "2 mail / saniye",
         "five": "5 mail / saniye (Gmail limiti riskli)"
       },
-      "rateHint": "Yavaş gönderim, spam filtrelerine takılma riskini azaltır.",
+      "rateHint": "Yavaş gönderim, spam filtrelerine takılma riskini azaltır. Hız ±%25 rastgele dalgalandırılır.",
+      "timeWindow": "Gönderim saat aralığı (opsiyonel)",
+      "timeWindowHint": "Belirlerseniz mailler yalnızca bu aralıkta gönderilir. Aralık dışındayken kampanya bekler.",
+      "weekdaysOnly": "Sadece hafta içi (Pzt-Cum)",
       "schedule": "Zamanla (opsiyonel)",
       "scheduleHint": "Boş bırakırsanız hemen başlar. Uygulama kapanırsa zamanlanmış gönderim çalışmaz."
     },
@@ -241,13 +282,19 @@
       "templateLabel": "Şablon",
       "subjectLabel": "Konu",
       "fromLabel": "Gönderen",
+      "poolValue": "{n} hesaptan rotasyonla",
+      "replyToLabel": "Yanıtla adresi",
+      "timeWindowLabel": "Gönderim aralığı",
+      "weekdaysShort": "hafta içi",
       "rateLabel": "Hız",
       "rateValue": "{n} mail / saniye",
       "estimatedDuration": "Tahmini süre",
       "minutes": "{n} dakika",
       "scheduleLabel": "Zamanlama",
       "doubleCheckTitle": "Lütfen bir kez daha kontrol edin",
-      "doubleCheckBody": "{count} kişiye {from} adresinden mail göndereceksiniz. Başladıktan sonra duraklatabilir veya iptal edebilirsiniz, ama gönderilmiş mailler geri çağrılamaz.",
+      "doubleCheckBody": "{count} kişiye {from} mail göndereceksiniz. Başladıktan sonra duraklatabilir veya iptal edebilirsiniz, ama gönderilmiş mailler geri çağrılamaz.",
+      "unsubWarnTitle": "Listeden çıkma seçeneği belirlenmemiş",
+      "unsubWarnBody": "Mail'lerinizde abonelikten çıkma seçeneği olmadığı için bazı alıcılar veya servis sağlayıcılar mailleri spam'e atabilir. Ayarlar > Listeden Çıkma'dan yöntem belirleyebilirsiniz.",
       "errorTitle": "Hata",
       "sendNow": "Şimdi gönder",
       "schedule": "Zamanla"
@@ -368,6 +415,10 @@
       "password": "Şifre",
       "passwordPlaceholderKeep": "Değiştirmemek için boş bırakın",
       "isDefault": "Bu hesabı varsayılan yap",
+      "dailyLimit": "Günlük gönderim limiti",
+      "dailyLimitHint": "Bu hesaptan günde gönderilecek maks mail. Gmail kişisel: 500, Outlook: 300. 0 = sınırsız.",
+      "cooldownSeconds": "Gönderim arası bekleme (saniye)",
+      "cooldownHint": "Bu hesaptan iki gönderim arasında minimum bekleme. 0 = bekleme yok.",
       "save": "Hesabı kaydet",
       "saveEdit": "Değişiklikleri kaydet",
       "testHint": "Test ettiğinizde kendi adresinize örnek mail gönderilir.",
@@ -378,7 +429,46 @@
     },
     "card": {
       "default": "Varsayılan",
-      "setDefault": "Varsayılan yap"
+      "setDefault": "Varsayılan yap",
+      "todayUsage": "Bugün {sent}/{limit}",
+      "cooldown": "cooldown {s}s"
+    },
+    "unsubscribe": {
+      "cardTitle": "Listeden Çıkma (Unsubscribe)",
+      "cardDesc": "Mailing yaparken alıcıların aboneliği bırakabilmesi için bir yöntem belirleyin. Ayarlanırsa List-Unsubscribe header'ı eklenir ve mail altında otomatik link gözükür. Spam'e düşme riskini azaltır.",
+      "methodLabel": "Yöntem",
+      "methodNone": "Hiçbiri",
+      "methodMailto": "E-posta adresi (mailto:)",
+      "methodUrl": "Web sayfası (URL)",
+      "methodCustom": "Özel metin (sadece görüntü)",
+      "valueMailto": "Cevap için adres",
+      "valueMailtoPlaceholder": "unsubscribe@bilgetek.com",
+      "valueUrl": "Sayfa URL'si",
+      "valueUrlPlaceholder": "https://bilgetek.com/unsubscribe",
+      "valueCustom": "Görüntülenecek metin",
+      "valueCustomPlaceholder": "Listeden çıkmak için bana cevap yazın.",
+      "save": "Kaydet",
+      "saved": "Ayar kaydedildi.",
+      "noneHint": "Hiçbiri seçili: spam filtrelerine takılma riski artar.",
+      "preview": "Önizleme"
+    },
+    "suppressions": {
+      "cardTitle": "Suppression Listesi (Engelli E-postalar)",
+      "cardDesc": "Bu listedeki adreslere asla mail gönderilmez. Hard bounce alan adresler buraya otomatik eklenir.",
+      "empty": "Liste boş.",
+      "addEmail": "E-posta adresi ekle",
+      "addCta": "Ekle",
+      "table": {
+        "email": "E-posta",
+        "reason": "Sebep",
+        "added": "Eklendi"
+      },
+      "reason": {
+        "manual": "Manuel",
+        "hard_bounce": "Hard bounce",
+        "unsubscribe": "Liste dışı"
+      },
+      "removeConfirm": "\"{email}\" adresini listeden çıkar mı? Bundan sonra bu adrese mail gönderilebilir."
     }
   },
 

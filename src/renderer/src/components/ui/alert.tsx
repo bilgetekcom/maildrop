@@ -1,9 +1,9 @@
 import { type HTMLAttributes, type ReactNode } from 'react'
-import { CheckCircle2, AlertCircle, Info } from 'lucide-react'
+import { CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface AlertProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'success' | 'error' | 'info'
+  variant?: 'success' | 'error' | 'info' | 'warning'
   title?: string
   children: ReactNode
 }
@@ -23,6 +23,11 @@ const variantStyles = {
     box: 'border-blue-200 bg-blue-50 text-blue-900',
     icon: Info,
     iconColor: 'text-blue-600'
+  },
+  warning: {
+    box: 'border-amber-200 bg-amber-50 text-amber-900',
+    icon: AlertTriangle,
+    iconColor: 'text-amber-600'
   }
 }
 

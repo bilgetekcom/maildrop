@@ -89,6 +89,40 @@ const migrations: Migration[] = [
       CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status);
       CREATE INDEX IF NOT EXISTS idx_campaigns_scheduled_at ON campaigns(scheduled_at);
     `
+  },
+  {
+    version: 3,
+    name: 'smtp_pool_and_campaign_extras',
+    up: `
+      ALTER TABLE smtp_accounts ADD COLUMN daily_limit INTEGER NOT NULL DEFAULT 100;
+      ALTER TABLE smtp_accounts ADD COLUMN cooldown_seconds INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE smtp_accounts ADD COLUMN daily_sent_count INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE smtp_accounts ADD COLUMN last_sent_at TEXT;
+      ALTER TABLE smtp_accounts ADD COLUMN daily_reset_at TEXT;
+
+      ALTER TABLE campaigns ADD COLUMN use_pool INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE campaigns ADD COLUMN account_pool_ids TEXT NOT NULL DEFAULT '[]';
+      ALTER TABLE campaigns ADD COLUMN time_window_start TEXT;
+      ALTER TABLE campaigns ADD COLUMN time_window_end TEXT;
+      ALTER TABLE campaigns ADD COLUMN weekdays_only INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE campaigns ADD COLUMN reply_to TEXT;
+
+      ALTER TABLE campaign_logs ADD COLUMN smtp_id INTEGER;
+
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS suppressions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        reason TEXT NOT NULL DEFAULT 'manual',
+        source TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_suppressions_email ON suppressions(email);
+    `
   }
 ]
 

@@ -29,7 +29,9 @@
     "help": "Help",
     "maybeLater": "Maybe later",
     "noContent": "—",
-    "test": "Test"
+    "test": "Test",
+    "clear": "Clear",
+    "select": "Select"
   },
 
   "nav": {
@@ -159,6 +161,15 @@
       "removeAttachment": "Remove attachment",
       "importHtml": "Import HTML",
       "linkPrompt": "Link URL (leave empty to remove):",
+      "hintsTitle": "Content Hints",
+      "hintsClean": "This template looks clean for spam filters.",
+      "hints": {
+        "subjectAllCaps": "Subject is all caps — triggers spam filters.",
+        "manyExclamations": "Too many exclamation marks in subject. 1-2 is enough.",
+        "subjectTooLong": "Subject is {n} characters. Under 60 is recommended.",
+        "triggerWords": "These words may trigger spam filters: {words}.",
+        "imageOnly": "Email is nearly image-only. High spam risk, add some text."
+      },
       "toolbar": {
         "undo": "Undo",
         "redo": "Redo",
@@ -190,6 +201,27 @@
       "toLabel": "To",
       "empty": "(empty)",
       "draftNote": "Showing preview of an unsaved template."
+    },
+    "library": {
+      "openCta": "Pick from library",
+      "title": "Template library",
+      "subtitle": "Choose from ready-made templates, copy to your list, and edit.",
+      "categories": "Categories",
+      "all": "All",
+      "preview": "Preview",
+      "copy": "Add to my templates",
+      "copied": "A copy of the template was added.",
+      "category": {
+        "welcome": "Welcome",
+        "announcement": "Announcement",
+        "promotion": "Promotion / Campaign",
+        "event": "Event",
+        "newsletter": "Newsletter",
+        "crm": "Customer Relations",
+        "b2b": "B2B / Outreach",
+        "education": "Education / Course",
+        "ngo": "NGO / Donation"
+      }
     }
   },
 
@@ -223,6 +255,12 @@
       "cardTitle": "Send settings",
       "campaignName": "Campaign name (optional)",
       "fromAccount": "From account",
+      "usePoolLabel": "Use multiple accounts (pool)",
+      "usePoolHint": "Rotating through multiple SMTP accounts reduces spam risk. Daily limits and cooldowns are applied per account.",
+      "poolAccounts": "Pool accounts (min 2)",
+      "poolMinHint": "Pool requires at least 2 accounts.",
+      "replyTo": "Reply-To (optional)",
+      "replyToHint": "If recipients reply, mail goes to this address. Empty = replies go to the sender.",
       "rate": "Emails per second",
       "rateOptions": {
         "half": "0.5 (one every 2 seconds — safest)",
@@ -230,7 +268,10 @@
         "two": "2 emails / second",
         "five": "5 emails / second (Gmail limit risky)"
       },
-      "rateHint": "Slower sending reduces the risk of being marked as spam.",
+      "rateHint": "Slower sending reduces spam risk. Rate is jittered ±25% randomly.",
+      "timeWindow": "Send time window (optional)",
+      "timeWindowHint": "If set, emails are only sent within this window. Outside the window the campaign waits.",
+      "weekdaysOnly": "Weekdays only (Mon-Fri)",
       "schedule": "Schedule (optional)",
       "scheduleHint": "Leave empty to start immediately. Scheduled sends won't run if the app is closed."
     },
@@ -241,6 +282,10 @@
       "templateLabel": "Template",
       "subjectLabel": "Subject",
       "fromLabel": "From",
+      "poolValue": "rotating across {n} accounts",
+      "replyToLabel": "Reply-To",
+      "timeWindowLabel": "Send window",
+      "weekdaysShort": "weekdays",
       "rateLabel": "Rate",
       "rateValue": "{n} emails / second",
       "estimatedDuration": "Estimated duration",
@@ -248,6 +293,8 @@
       "scheduleLabel": "Schedule",
       "doubleCheckTitle": "Please double-check",
       "doubleCheckBody": "You're about to send emails to {count} contacts from {from}. Once started you can pause or cancel, but sent emails cannot be recalled.",
+      "unsubWarnTitle": "No unsubscribe method configured",
+      "unsubWarnBody": "Your emails won't include an unsubscribe option, which may trigger spam filters. Configure a method in Settings > Unsubscribe.",
       "errorTitle": "Error",
       "sendNow": "Send now",
       "schedule": "Schedule"
@@ -368,6 +415,10 @@
       "password": "Password",
       "passwordPlaceholderKeep": "Leave empty to keep unchanged",
       "isDefault": "Make this account default",
+      "dailyLimit": "Daily send limit",
+      "dailyLimitHint": "Max emails per day from this account. Gmail personal: 500, Outlook: 300. 0 = unlimited.",
+      "cooldownSeconds": "Cooldown between sends (seconds)",
+      "cooldownHint": "Minimum delay between two sends from this account. 0 = no delay.",
       "save": "Save account",
       "saveEdit": "Save changes",
       "testHint": "Test sends a sample email to your own address.",
@@ -378,7 +429,46 @@
     },
     "card": {
       "default": "Default",
-      "setDefault": "Set as default"
+      "setDefault": "Set as default",
+      "todayUsage": "Today {sent}/{limit}",
+      "cooldown": "cooldown {s}s"
+    },
+    "unsubscribe": {
+      "cardTitle": "Unsubscribe",
+      "cardDesc": "Choose a way for recipients to opt out of your mailing. If set, a List-Unsubscribe header and a footer link are added to outgoing mail. Reduces spam risk.",
+      "methodLabel": "Method",
+      "methodNone": "None",
+      "methodMailto": "Email address (mailto:)",
+      "methodUrl": "Web page (URL)",
+      "methodCustom": "Custom text (display only)",
+      "valueMailto": "Reply address",
+      "valueMailtoPlaceholder": "unsubscribe@bilgetek.com",
+      "valueUrl": "Page URL",
+      "valueUrlPlaceholder": "https://bilgetek.com/unsubscribe",
+      "valueCustom": "Text to display",
+      "valueCustomPlaceholder": "Reply to this email to unsubscribe.",
+      "save": "Save",
+      "saved": "Setting saved.",
+      "noneHint": "None selected: spam filter risk is higher.",
+      "preview": "Preview"
+    },
+    "suppressions": {
+      "cardTitle": "Suppression List (Blocked Emails)",
+      "cardDesc": "Emails on this list are never sent. Addresses that hard-bounce are added automatically.",
+      "empty": "List is empty.",
+      "addEmail": "Add email address",
+      "addCta": "Add",
+      "table": {
+        "email": "Email",
+        "reason": "Reason",
+        "added": "Added"
+      },
+      "reason": {
+        "manual": "Manual",
+        "hard_bounce": "Hard bounce",
+        "unsubscribe": "Unsubscribed"
+      },
+      "removeConfirm": "Remove \"{email}\" from the list? Future mail to this address will be allowed."
     }
   },
 

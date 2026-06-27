@@ -13,6 +13,7 @@ import { Alert } from '../ui/alert'
 import { EditorToolbar } from './EditorToolbar'
 import { VariablePanel } from './VariablePanel'
 import { PreviewDialog } from './PreviewDialog'
+import { ContentHints } from './ContentHints'
 import { useT } from '../../i18n'
 import { useToast } from '../ui/toast'
 
@@ -218,8 +219,9 @@ export function TemplateEditor({ template, onCreated }: TemplateEditorProps): JS
         </div>
       </div>
 
-      <aside className="border-l bg-card/40 p-4 overflow-y-auto hidden lg:block">
+      <aside className="border-l bg-card/40 p-4 overflow-y-auto hidden lg:block space-y-4">
         <VariablePanel detected={detected} onInsert={insertVariable} />
+        <ContentHints subject={subject} bodyHtml={bodyHtml} />
       </aside>
 
       <PreviewDialog

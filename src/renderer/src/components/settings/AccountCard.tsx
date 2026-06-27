@@ -37,6 +37,17 @@ export function AccountCard({
         <p className="mt-1 text-xs text-muted-foreground">
           {account.host}:{account.port} · {account.secure ? 'SSL' : 'STARTTLS'}
         </p>
+        {account.dailyLimit > 0 && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t('settings.card.todayUsage', {
+              sent: account.dailySentCount,
+              limit: account.dailyLimit
+            })}
+            {account.cooldownSeconds > 0 && (
+              <span> · {t('settings.card.cooldown', { s: account.cooldownSeconds })}</span>
+            )}
+          </p>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-1">
         {!account.isDefault && (

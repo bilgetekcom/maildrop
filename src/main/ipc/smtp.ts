@@ -15,7 +15,12 @@ function rowToAccount(r: Record<string, unknown>): SmtpAccount {
     user: r.user as string,
     encryptedPass: r.encrypted_pass as string,
     isDefault: Boolean(r.is_default),
-    createdAt: r.created_at as string
+    createdAt: r.created_at as string,
+    dailyLimit: (r.daily_limit as number) ?? 100,
+    cooldownSeconds: (r.cooldown_seconds as number) ?? 0,
+    dailySentCount: (r.daily_sent_count as number) ?? 0,
+    lastSentAt: (r.last_sent_at as string) ?? null,
+    dailyResetAt: (r.daily_reset_at as string) ?? null
   }
 }
 
@@ -43,8 +48,8 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     const db = getDb()
     const encrypted = encryptSecret(input.password)
     const stmt = db.prepare(
-      `INSERT INTO smtp_accounts (name, host, port, secure, user, encrypted_pass, is_default)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO smtp_accounts (name, host, port, secure, user, encrypted_pass, is_default, daily_limit, cooldown_seconds)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     const result = stmt.run(
       input.name,
@@ -53,7 +58,9 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
       input.secure ? 1 : 0,
       input.user,
       encrypted,
-      input.isDefault ? 1 : 0
+      input.isDefault ? 1 : 0,
+      input.dailyLimit ?? 100,
+      input.cooldownSeconds ?? 0
     )
     const row = db
       .prepare('SELECT * FROM smtp_accounts WHERE id = ?')
@@ -116,6 +123,14 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     if (input.password !== undefined) {
       sets.push('encrypted_pass = ?')
       vals.push(encryptSecret(input.password))
+    }
+    if (input.dailyLimit !== undefined) {
+      sets.push('daily_limit = ?')
+      vals.push(input.dailyLimit)
+    }
+    if (input.cooldownSeconds !== undefined) {
+      sets.push('cooldown_seconds = ?')
+      vals.push(input.cooldownSeconds)
     }
     if (sets.length) {
       vals.push(id)

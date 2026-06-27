@@ -39,7 +39,9 @@ export function EditAccountDialog({
             port: account.port,
             secure: account.secure,
             user: account.user,
-            isDefault: account.isDefault
+            isDefault: account.isDefault,
+            dailyLimit: account.dailyLimit,
+            cooldownSeconds: account.cooldownSeconds
           }}
           passwordPlaceholder={t('settings.form.passwordPlaceholderKeep')}
           showPassword={true}
@@ -51,7 +53,9 @@ export function EditAccountDialog({
               port: input.port,
               secure: input.secure,
               user: input.user,
-              isDefault: input.isDefault
+              isDefault: input.isDefault,
+              dailyLimit: input.dailyLimit,
+              cooldownSeconds: input.cooldownSeconds
             }
             if (input.password) partial.password = input.password
             await onSave(account.id, partial)

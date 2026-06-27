@@ -1,5 +1,10 @@
 import { create } from 'zustand'
-import type { Campaign, CampaignLog, SendProgress } from '../../../shared/types'
+import type {
+  Campaign,
+  CampaignLog,
+  CampaignStartInput,
+  SendProgress
+} from '../../../shared/types'
 
 interface CampaignsStore {
   campaigns: Campaign[]
@@ -9,14 +14,7 @@ interface CampaignsStore {
   refresh: () => Promise<void>
   logs: (id: number) => Promise<CampaignLog[]>
 
-  start: (input: {
-    name: string
-    templateId: number
-    smtpId: number
-    contactIds: number[]
-    ratePerSecond?: number
-    scheduleAt?: string
-  }) => Promise<Campaign>
+  start: (input: CampaignStartInput) => Promise<Campaign>
 
   pause: (id: number) => Promise<void>
   resume: (id: number) => Promise<void>

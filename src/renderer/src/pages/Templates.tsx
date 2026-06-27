@@ -3,19 +3,34 @@ import { Mail } from 'lucide-react'
 import { useTemplatesStore } from '../store/templates'
 import { TemplateList } from '../components/templates/TemplateList'
 import { TemplateEditor } from '../components/templates/TemplateEditor'
+import { LibraryDialog } from '../components/templates/LibraryDialog'
 import type { Template } from '../../../shared/types'
-import { useT } from '../i18n'
+import type { LibraryTemplate } from '../../../shared/template-library'
+import { useT, type Locale } from '../i18n'
 import { useToast } from '../components/ui/toast'
 
 export function Templates(): JSX.Element {
-  const { t } = useT()
+  const { t, locale } = useT()
   const toast = useToast()
-  const { templates, selectedId, refresh, select, remove } = useTemplatesStore()
+  const { templates, selectedId, refresh, select, remove, create } = useTemplatesStore()
   const [draftMode, setDraftMode] = useState(false)
+  const [libraryOpen, setLibraryOpen] = useState(false)
 
   useEffect(() => {
     void refresh()
   }, [refresh])
+
+  async function handleCopyFromLibrary(item: LibraryTemplate): Promise<void> {
+    const lang: Locale = locale
+    const created = await create({
+      name: item.name[lang],
+      subject: item.subject[lang],
+      bodyHtml: item.bodyHtml[lang],
+      attachmentPath: null
+    })
+    select(created.id)
+    setDraftMode(false)
+  }
 
   const selected = templates.find((tpl) => tpl.id === selectedId) ?? null
 
@@ -53,7 +68,13 @@ export function Templates(): JSX.Element {
         selectedId={selectedId}
         onSelect={handleSelect}
         onCreate={handleCreate}
+        onOpenLibrary={() => setLibraryOpen(true)}
         onRemove={handleRemove}
+      />
+      <LibraryDialog
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        onCopied={handleCopyFromLibrary}
       />
       <div className="flex-1 min-w-0">
         {showEditor ? (

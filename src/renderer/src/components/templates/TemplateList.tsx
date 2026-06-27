@@ -1,4 +1,4 @@
-import { Mail, Plus, Trash2 } from 'lucide-react'
+import { Mail, Plus, Trash2, BookOpen } from 'lucide-react'
 import type { Template } from '../../../../shared/types'
 import { Button } from '../ui/button'
 import { cn } from '../../lib/utils'
@@ -9,6 +9,7 @@ interface TemplateListProps {
   selectedId: number | null
   onSelect: (id: number | null) => void
   onCreate: () => void
+  onOpenLibrary: () => void
   onRemove: (t: Template) => void
 }
 
@@ -17,15 +18,20 @@ export function TemplateList({
   selectedId,
   onSelect,
   onCreate,
+  onOpenLibrary,
   onRemove
 }: TemplateListProps): JSX.Element {
   const { t } = useT()
   return (
     <aside className="flex w-72 shrink-0 flex-col border-r bg-card/40">
-      <div className="border-b p-3">
+      <div className="border-b p-3 space-y-2">
         <Button onClick={onCreate} className="w-full">
           <Plus className="h-4 w-4" />
           {t('templates.newTemplate')}
+        </Button>
+        <Button onClick={onOpenLibrary} variant="outline" className="w-full">
+          <BookOpen className="h-4 w-4" />
+          {t('templates.library.openCta')}
         </Button>
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-1">

@@ -6,6 +6,8 @@ import { AccountCard } from '../components/settings/AccountCard'
 import { AccountForm } from '../components/settings/AccountForm'
 import { EditAccountDialog } from '../components/settings/EditAccountDialog'
 import { UpdateCard } from '../components/settings/UpdateCard'
+import { UnsubscribeCard } from '../components/settings/UnsubscribeCard'
+import { SuppressionsCard } from '../components/settings/SuppressionsCard'
 import { Button } from '../components/ui/button'
 import { Select } from '../components/ui/select'
 import { Label } from '../components/ui/label'
@@ -137,6 +139,9 @@ export function Settings(): JSX.Element {
             </CardContent>
           </Card>
         )}
+
+        <UnsubscribeCard />
+        <SuppressionsCard />
       </section>
 
       <EditAccountDialog

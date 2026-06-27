@@ -10,9 +10,10 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Select } from '../components/ui/select'
+import { Switch } from '../components/ui/switch'
 import { Alert } from '../components/ui/alert'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import type { Campaign } from '../../../shared/types'
+import type { Campaign, UnsubscribeConfig } from '../../../shared/types'
 import { cn } from '../lib/utils'
 import { useT } from '../i18n'
 
@@ -28,15 +29,23 @@ export function Sending(): JSX.Element {
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const [templateId, setTemplateId] = useState<number | null>(null)
   const [smtpId, setSmtpId] = useState<number | null>(null)
+  const [usePool, setUsePool] = useState(false)
+  const [poolIds, setPoolIds] = useState<Set<number>>(new Set())
   const [rate, setRate] = useState(1)
   const [scheduleAt, setScheduleAt] = useState('')
+  const [timeWindowStart, setTimeWindowStart] = useState('')
+  const [timeWindowEnd, setTimeWindowEnd] = useState('')
+  const [weekdaysOnly, setWeekdaysOnly] = useState(false)
+  const [replyTo, setReplyTo] = useState('')
   const [name, setName] = useState('')
   const [active, setActive] = useState<Campaign | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [unsubCfg, setUnsubCfg] = useState<UnsubscribeConfig | null>(null)
 
   useEffect(() => {
     void refreshSmtp()
     void refreshTemplates()
+    void window.api.appSettings.getUnsubscribe().then(setUnsubCfg)
     const unsub = subscribe()
     return unsub
   }, [refreshSmtp, refreshTemplates, subscribe])
@@ -49,29 +58,45 @@ export function Sending(): JSX.Element {
   }, [accounts, smtpId])
 
   const template = templates.find((tpl) => tpl.id === templateId) ?? null
+  const hasUnsubConfigured = unsubCfg && unsubCfg.method !== 'none' && unsubCfg.value.trim() !== ''
 
   function reset(): void {
     setStep('contacts')
     setSelected(new Set())
     setTemplateId(null)
+    setUsePool(false)
+    setPoolIds(new Set())
     setRate(1)
     setScheduleAt('')
+    setTimeWindowStart('')
+    setTimeWindowEnd('')
+    setWeekdaysOnly(false)
+    setReplyTo('')
     setName('')
     setActive(null)
     setError(null)
   }
 
   async function handleStart(): Promise<void> {
-    if (!templateId || !smtpId || selected.size === 0) return
+    if (!templateId || selected.size === 0) return
+    const pool = [...poolIds]
+    const primary = usePool ? (pool[0] ?? smtpId) : smtpId
+    if (!primary) return
     setError(null)
     try {
       const c = await start({
         name: name.trim() || `${template?.name ?? 'Send'} — ${new Date().toLocaleString()}`,
         templateId,
-        smtpId,
+        smtpId: primary,
         contactIds: [...selected],
         ratePerSecond: rate,
-        scheduleAt: scheduleAt || undefined
+        scheduleAt: scheduleAt || undefined,
+        usePool,
+        accountPoolIds: usePool ? pool : undefined,
+        timeWindowStart: timeWindowStart || null,
+        timeWindowEnd: timeWindowEnd || null,
+        weekdaysOnly,
+        replyTo: replyTo.trim() || null
       })
       setActive(c)
       setStep('running')
@@ -98,6 +123,15 @@ export function Sending(): JSX.Element {
         </Alert>
       </div>
     )
+  }
+
+  function togglePool(id: number): void {
+    setPoolIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
   return (
@@ -154,19 +188,79 @@ export function Sending(): JSX.Element {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Switch
+                    id="use-pool"
+                    checked={usePool}
+                    onChange={(e) => setUsePool(e.target.checked)}
+                    label={t('sending.settings.usePoolLabel')}
+                  />
+                  <p className="text-xs text-muted-foreground">{t('sending.settings.usePoolHint')}</p>
+                </div>
+
+                {usePool ? (
+                  <div className="space-y-1.5">
+                    <Label>{t('sending.settings.poolAccounts')}</Label>
+                    <div className="grid grid-cols-1 gap-2 rounded-lg border p-3 sm:grid-cols-2">
+                      {accounts.map((a) => (
+                        <label
+                          key={a.id}
+                          className="flex cursor-pointer items-start gap-2 text-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={poolIds.has(a.id)}
+                            onChange={() => togglePool(a.id)}
+                            className="mt-0.5"
+                          />
+                          <span>
+                            <span className="font-medium">{a.name}</span>
+                            <span className="block truncate text-xs text-muted-foreground">
+                              {a.user}
+                            </span>
+                            {a.dailyLimit > 0 && (
+                              <span className="block text-xs text-muted-foreground">
+                                {t('settings.card.todayUsage', {
+                                  sent: a.dailySentCount,
+                                  limit: a.dailyLimit
+                                })}
+                              </span>
+                            )}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    {poolIds.size < 2 && (
+                      <p className="text-xs text-amber-600">{t('sending.settings.poolMinHint')}</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="smtp">{t('sending.settings.fromAccount')}</Label>
+                    <Select
+                      id="smtp"
+                      value={smtpId ?? ''}
+                      onChange={(e) => setSmtpId(Number(e.target.value))}
+                    >
+                      {accounts.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name} ({a.user}) {a.isDefault ? `— ${t('common.default')}` : ''}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                )}
+
                 <div className="space-y-1.5">
-                  <Label htmlFor="smtp">{t('sending.settings.fromAccount')}</Label>
-                  <Select
-                    id="smtp"
-                    value={smtpId ?? ''}
-                    onChange={(e) => setSmtpId(Number(e.target.value))}
-                  >
-                    {accounts.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name} ({a.user}) {a.isDefault ? `— ${t('common.default')}` : ''}
-                      </option>
-                    ))}
-                  </Select>
+                  <Label htmlFor="reply-to">{t('sending.settings.replyTo')}</Label>
+                  <Input
+                    id="reply-to"
+                    type="email"
+                    placeholder="info@bilgetek.com"
+                    value={replyTo}
+                    onChange={(e) => setReplyTo(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">{t('sending.settings.replyToHint')}</p>
                 </div>
 
                 <div className="space-y-1.5">
@@ -181,6 +275,48 @@ export function Sending(): JSX.Element {
                     {t('sending.settings.rateHint')}
                   </p>
                 </div>
+
+                <div className="space-y-1.5">
+                  <Label>{t('sending.settings.timeWindow')}</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="time"
+                      value={timeWindowStart}
+                      onChange={(e) => setTimeWindowStart(e.target.value)}
+                      className="w-32"
+                    />
+                    <span className="text-sm text-muted-foreground">→</span>
+                    <Input
+                      type="time"
+                      value={timeWindowEnd}
+                      onChange={(e) => setTimeWindowEnd(e.target.value)}
+                      className="w-32"
+                    />
+                    {(timeWindowStart || timeWindowEnd) && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setTimeWindowStart('')
+                          setTimeWindowEnd('')
+                        }}
+                      >
+                        {t('common.clear')}
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('sending.settings.timeWindowHint')}
+                  </p>
+                </div>
+
+                <Switch
+                  id="weekdays-only"
+                  checked={weekdaysOnly}
+                  onChange={(e) => setWeekdaysOnly(e.target.checked)}
+                  label={t('sending.settings.weekdaysOnly')}
+                />
 
                 <div className="space-y-1.5">
                   <Label htmlFor="schedule">{t('sending.settings.schedule')}</Label>
@@ -201,7 +337,10 @@ export function Sending(): JSX.Element {
                 <ArrowLeft className="h-4 w-4" />
                 {t('common.back')}
               </Button>
-              <Button onClick={() => setStep('confirm')}>
+              <Button
+                onClick={() => setStep('confirm')}
+                disabled={usePool && poolIds.size < 2}
+              >
                 {t('sending.nextConfirm')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -224,8 +363,19 @@ export function Sending(): JSX.Element {
                 <Row label={t('sending.confirm.subjectLabel')} value={template?.subject ?? '—'} />
                 <Row
                   label={t('sending.confirm.fromLabel')}
-                  value={accounts.find((a) => a.id === smtpId)?.user ?? '—'}
+                  value={
+                    usePool
+                      ? t('sending.confirm.poolValue', { n: poolIds.size })
+                      : accounts.find((a) => a.id === smtpId)?.user ?? '—'
+                  }
                 />
+                {replyTo && <Row label={t('sending.confirm.replyToLabel')} value={replyTo} />}
+                {(timeWindowStart && timeWindowEnd) && (
+                  <Row
+                    label={t('sending.confirm.timeWindowLabel')}
+                    value={`${timeWindowStart} – ${timeWindowEnd}${weekdaysOnly ? ' · ' + t('sending.confirm.weekdaysShort') : ''}`}
+                  />
+                )}
                 <Row label={t('sending.confirm.rateLabel')} value={t('sending.confirm.rateValue', { n: rate })} />
                 <Row
                   label={t('sending.confirm.estimatedDuration')}
@@ -245,9 +395,15 @@ export function Sending(): JSX.Element {
             <Alert variant="info" title={t('sending.confirm.doubleCheckTitle')}>
               {t('sending.confirm.doubleCheckBody', {
                 count: selected.size,
-                from: accounts.find((a) => a.id === smtpId)?.user ?? ''
+                from: usePool ? t('sending.confirm.poolValue', { n: poolIds.size }) : (accounts.find((a) => a.id === smtpId)?.user ?? '')
               })}
             </Alert>
+
+            {!hasUnsubConfigured && (
+              <Alert variant="warning" title={t('sending.confirm.unsubWarnTitle')}>
+                {t('sending.confirm.unsubWarnBody')}
+              </Alert>
+            )}
 
             {error && (
               <Alert variant="error" title={t('sending.confirm.errorTitle')}>

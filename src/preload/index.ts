@@ -9,7 +9,10 @@ import type {
   Template,
   Campaign,
   CampaignLog,
-  SendProgress
+  CampaignStartInput,
+  SendProgress,
+  Suppression,
+  UnsubscribeConfig
 } from '../shared/types'
 
 const api = {
@@ -74,14 +77,8 @@ const api = {
     list: (): Promise<Campaign[]> => ipcRenderer.invoke('campaigns:list'),
     get: (id: number): Promise<Campaign> => ipcRenderer.invoke('campaigns:get', id),
     logs: (id: number): Promise<CampaignLog[]> => ipcRenderer.invoke('campaigns:logs', id),
-    start: (input: {
-      name: string
-      templateId: number
-      smtpId: number
-      contactIds: number[]
-      ratePerSecond?: number
-      scheduleAt?: string
-    }): Promise<Campaign> => ipcRenderer.invoke('campaigns:start', input),
+    start: (input: CampaignStartInput): Promise<Campaign> =>
+      ipcRenderer.invoke('campaigns:start', input),
     pause: (id: number): Promise<void> => ipcRenderer.invoke('campaigns:pause', id),
     resume: (id: number): Promise<void> => ipcRenderer.invoke('campaigns:resume', id),
     cancel: (id: number): Promise<void> => ipcRenderer.invoke('campaigns:cancel', id),
@@ -117,6 +114,19 @@ const api = {
       return () => ipcRenderer.removeListener('app:beforeClose', listener)
     },
     hasActiveSending: (): Promise<boolean> => ipcRenderer.invoke('app:hasActiveSending')
+  },
+  suppressions: {
+    list: (): Promise<Suppression[]> => ipcRenderer.invoke('suppressions:list'),
+    add: (email: string, reason?: string): Promise<Suppression> =>
+      ipcRenderer.invoke('suppressions:add', email, reason),
+    remove: (id: number): Promise<void> => ipcRenderer.invoke('suppressions:remove', id),
+    has: (email: string): Promise<boolean> => ipcRenderer.invoke('suppressions:has', email)
+  },
+  appSettings: {
+    getUnsubscribe: (): Promise<UnsubscribeConfig> =>
+      ipcRenderer.invoke('settings:getUnsubscribe'),
+    setUnsubscribe: (cfg: UnsubscribeConfig): Promise<void> =>
+      ipcRenderer.invoke('settings:setUnsubscribe', cfg)
   },
   updater: {
     check: (): Promise<{ ok: boolean; version: string | null; currentVersion: string; error?: string }> =>

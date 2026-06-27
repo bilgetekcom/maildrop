@@ -39,6 +39,8 @@ export function AccountForm({
   const [user, setUser] = useState(initial?.user ?? '')
   const [password, setPassword] = useState('')
   const [isDefault, setIsDefault] = useState(initial?.isDefault ?? false)
+  const [dailyLimit, setDailyLimit] = useState<number>(initial?.dailyLimit ?? 100)
+  const [cooldownSeconds, setCooldownSeconds] = useState<number>(initial?.cooldownSeconds ?? 0)
 
   const [busy, setBusy] = useState(false)
   const [testing, setTesting] = useState(false)
@@ -65,7 +67,9 @@ export function AccountForm({
       secure,
       user: user.trim(),
       password,
-      isDefault
+      isDefault,
+      dailyLimit: Math.max(0, Math.floor(Number(dailyLimit) || 0)),
+      cooldownSeconds: Math.max(0, Math.floor(Number(cooldownSeconds) || 0))
     }
   }
 
@@ -222,6 +226,31 @@ export function AccountForm({
           </p>
         </div>
       )}
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label htmlFor="dailyLimit">{t('settings.form.dailyLimit')}</Label>
+          <Input
+            id="dailyLimit"
+            type="number"
+            min={0}
+            value={dailyLimit}
+            onChange={(e) => setDailyLimit(Number(e.target.value))}
+          />
+          <p className="text-xs text-muted-foreground">{t('settings.form.dailyLimitHint')}</p>
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="cooldown">{t('settings.form.cooldownSeconds')}</Label>
+          <Input
+            id="cooldown"
+            type="number"
+            min={0}
+            value={cooldownSeconds}
+            onChange={(e) => setCooldownSeconds(Number(e.target.value))}
+          />
+          <p className="text-xs text-muted-foreground">{t('settings.form.cooldownHint')}</p>
+        </div>
+      </div>
 
       <Switch
         id="isDefault"

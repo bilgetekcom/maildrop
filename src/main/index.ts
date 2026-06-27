@@ -12,6 +12,8 @@ import {
   hasActiveSendingCampaign
 } from './ipc/campaigns'
 import { registerReportHandlers } from './ipc/reports'
+import { registerSuppressionHandlers } from './ipc/suppressions'
+import { registerAppSettingsHandlers } from './ipc/app-settings'
 import { initDatabase } from './db'
 
 function createWindow(): BrowserWindow {
@@ -98,6 +100,8 @@ app.whenReady().then(() => {
   registerTemplateHandlers(ipcMain)
   registerCampaignHandlers(ipcMain)
   registerReportHandlers(ipcMain)
+  registerSuppressionHandlers(ipcMain)
+  registerAppSettingsHandlers(ipcMain)
   registerUpdaterHandlers(ipcMain)
   setupAutoUpdater()
 
