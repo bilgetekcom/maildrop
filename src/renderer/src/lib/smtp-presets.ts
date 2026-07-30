@@ -1,5 +1,5 @@
 export interface SmtpPreset {
-  id: 'gmail' | 'outlook' | 'yahoo' | 'custom'
+  id: 'gmail' | 'outlook' | 'yahoo' | 'brevo' | 'custom'
   host: string
   port: number
   secure: boolean
@@ -27,6 +27,13 @@ export const SMTP_PRESETS: SmtpPreset[] = [
     port: 465,
     secure: true,
     helpUrl: 'https://help.yahoo.com/kb/SLN15241.html'
+  },
+  {
+    id: 'brevo',
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false,
+    helpUrl: 'https://app.brevo.com/settings/keys/smtp'
   },
   {
     id: 'custom',

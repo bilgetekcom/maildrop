@@ -411,7 +411,9 @@
       "host": "SMTP Server",
       "port": "Port",
       "secure": "Use SSL / TLS",
-      "email": "Email address",
+      "email": "Email address (SMTP login)",
+      "fromEmail": "Sender address (From)",
+      "fromEmailHint": "The address recipients will see. Leave empty to use the login address. For relays like Brevo/SendGrid, enter your branded address (e.g. info@bilgetek.com).",
       "password": "Password",
       "passwordPlaceholderKeep": "Leave empty to keep unchanged",
       "isDefault": "Make this account default",
@@ -477,12 +479,14 @@
       "gmail": "Gmail",
       "outlook": "Outlook / Hotmail",
       "yahoo": "Yahoo Mail",
+      "brevo": "Brevo (Sendinblue)",
       "custom": "Custom SMTP"
     },
     "hints": {
       "gmail": "Enter an app password as your password. You can create one from \"App passwords\" in your Google Account.",
       "outlook": "If two-step verification is enabled, you'll need an app password.",
       "yahoo": "You'll need to create an app password from your Yahoo account.",
+      "brevo": "Enter your Brevo SMTP key (xsmtpsib-...) as the password. The login is Brevo's own (…@smtp-brevo.com), while the Sender address should be your authenticated domain (e.g. info@bilgetek.com).",
       "custom": "Enter your company's or hosting provider's SMTP details."
     },
     "testSuccess": "Connection successful. A test email was sent to your address — check your inbox."

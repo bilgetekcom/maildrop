@@ -13,6 +13,7 @@ function rowToAccount(r: Record<string, unknown>): SmtpAccount {
     port: r.port as number,
     secure: Boolean(r.secure),
     user: r.user as string,
+    fromEmail: (r.from_email as string) ?? '',
     encryptedPass: r.encrypted_pass as string,
     isDefault: Boolean(r.is_default),
     createdAt: r.created_at as string,
@@ -48,8 +49,8 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     const db = getDb()
     const encrypted = encryptSecret(input.password)
     const stmt = db.prepare(
-      `INSERT INTO smtp_accounts (name, host, port, secure, user, encrypted_pass, is_default, daily_limit, cooldown_seconds)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO smtp_accounts (name, host, port, secure, user, from_email, encrypted_pass, is_default, daily_limit, cooldown_seconds)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     const result = stmt.run(
       input.name,
@@ -57,6 +58,7 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
       input.port,
       input.secure ? 1 : 0,
       input.user,
+      input.fromEmail?.trim() || input.user,
       encrypted,
       input.isDefault ? 1 : 0,
       input.dailyLimit ?? 100,
@@ -86,7 +88,7 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
         })
         await transport.verify()
         await transport.sendMail({
-          from: input.user,
+          from: input.fromEmail?.trim() || input.user,
           to: sampleTo,
           subject: mail.subject,
           text: mail.body
@@ -120,6 +122,10 @@ export function registerSmtpHandlers(ipc: IpcMain): void {
     if (input.port !== undefined) { sets.push('port = ?'); vals.push(input.port) }
     if (input.secure !== undefined) { sets.push('secure = ?'); vals.push(input.secure ? 1 : 0) }
     if (input.user !== undefined) { sets.push('user = ?'); vals.push(input.user) }
+    if (input.fromEmail !== undefined) {
+      sets.push('from_email = ?')
+      vals.push(input.fromEmail.trim() || input.user || '')
+    }
     if (input.password !== undefined) {
       sets.push('encrypted_pass = ?')
       vals.push(encryptSecret(input.password))

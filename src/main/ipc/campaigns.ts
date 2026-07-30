@@ -117,6 +117,7 @@ interface PoolAccount {
   port: number
   secure: boolean
   user: string
+  from_email: string | null
   encrypted_pass: string
   daily_limit: number
   cooldown_seconds: number
@@ -137,6 +138,7 @@ function loadAccount(id: number): PoolAccount | null {
     port: r.port as number,
     secure: Boolean(r.secure),
     user: r.user as string,
+    from_email: (r.from_email as string) ?? null,
     encrypted_pass: r.encrypted_pass as string,
     daily_limit: (r.daily_limit as number) ?? 100,
     cooldown_seconds: (r.cooldown_seconds as number) ?? 0,
@@ -523,7 +525,7 @@ async function runCampaign(campaignId: number): Promise<void> {
           throw new Error(ERR.SMTP_ATTACHMENT_MISSING)
         }
         await getTransport(selectedAccount).sendMail({
-          from: selectedAccount.user,
+          from: selectedAccount.from_email || selectedAccount.user,
           to: email,
           subject,
           html,

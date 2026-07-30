@@ -39,6 +39,7 @@ export function EditAccountDialog({
             port: account.port,
             secure: account.secure,
             user: account.user,
+            fromEmail: account.fromEmail,
             isDefault: account.isDefault,
             dailyLimit: account.dailyLimit,
             cooldownSeconds: account.cooldownSeconds
@@ -53,6 +54,7 @@ export function EditAccountDialog({
               port: input.port,
               secure: input.secure,
               user: input.user,
+              fromEmail: input.fromEmail,
               isDefault: input.isDefault,
               dailyLimit: input.dailyLimit,
               cooldownSeconds: input.cooldownSeconds

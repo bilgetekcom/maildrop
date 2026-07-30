@@ -411,7 +411,9 @@
       "host": "SMTP Sunucusu",
       "port": "Port",
       "secure": "SSL / TLS bağlantısı kullan",
-      "email": "E-posta adresi",
+      "email": "E-posta adresi (SMTP girişi)",
+      "fromEmail": "Gönderen adresi (From)",
+      "fromEmailHint": "Alıcının göreceği adres. Boş bırakırsanız giriş adresi kullanılır. Brevo/SendGrid gibi relay'lerde markalı adresinizi yazın (ör. info@bilgetek.com).",
       "password": "Şifre",
       "passwordPlaceholderKeep": "Değiştirmemek için boş bırakın",
       "isDefault": "Bu hesabı varsayılan yap",
@@ -477,12 +479,14 @@
       "gmail": "Gmail",
       "outlook": "Outlook / Hotmail",
       "yahoo": "Yahoo Mail",
+      "brevo": "Brevo (Sendinblue)",
       "custom": "Özel SMTP"
     },
     "hints": {
       "gmail": "Şifre olarak uygulama şifresi girin. Gmail hesabınızdan \"Uygulama şifreleri\" sayfasından oluşturabilirsiniz.",
       "outlook": "Outlook hesabınızda iki adımlı doğrulama açıksa uygulama şifresi gerekir.",
       "yahoo": "Yahoo hesabınızdan uygulama şifresi oluşturmanız gerekir.",
+      "brevo": "Şifre olarak Brevo SMTP anahtarınızı (xsmtpsib-...) girin. Giriş adresi Brevo'nun verdiği login (…@smtp-brevo.com), Gönderen adresi ise doğruladığınız domain (ör. info@bilgetek.com) olmalı.",
       "custom": "Şirketinizin veya hosting sağlayıcınızın SMTP bilgilerini girin."
     },
     "testSuccess": "Bağlantı başarılı. Test maili kendi adresinize gönderildi, gelen kutunuzu kontrol edin."

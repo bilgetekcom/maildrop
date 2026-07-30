@@ -7,6 +7,8 @@ export interface SmtpAccount {
   port: number
   secure: boolean
   user: string
+  /** Gönderen (From) adresi. Boşsa `user` kullanılır. SMTP login ile From'un farklı olduğu durumlar için (ör. Brevo relay). */
+  fromEmail: string
   encryptedPass: string
   isDefault: boolean
   createdAt: string
@@ -29,6 +31,7 @@ export interface SmtpAccountInput {
   secure: boolean
   user: string
   password: string
+  fromEmail?: string
   isDefault?: boolean
   dailyLimit?: number
   cooldownSeconds?: number

@@ -123,6 +123,13 @@ const migrations: Migration[] = [
       );
       CREATE UNIQUE INDEX IF NOT EXISTS idx_suppressions_email ON suppressions(email);
     `
+  },
+  {
+    version: 4,
+    name: 'smtp_from_email',
+    up: `
+      ALTER TABLE smtp_accounts ADD COLUMN from_email TEXT;
+    `
   }
 ]
 

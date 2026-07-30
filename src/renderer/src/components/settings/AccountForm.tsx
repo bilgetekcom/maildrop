@@ -37,6 +37,7 @@ export function AccountForm({
   const [port, setPort] = useState(initial?.port ?? preset.port)
   const [secure, setSecure] = useState(initial?.secure ?? preset.secure)
   const [user, setUser] = useState(initial?.user ?? '')
+  const [fromEmail, setFromEmail] = useState(initial?.fromEmail ?? '')
   const [password, setPassword] = useState('')
   const [isDefault, setIsDefault] = useState(initial?.isDefault ?? false)
   const [dailyLimit, setDailyLimit] = useState<number>(initial?.dailyLimit ?? 100)
@@ -66,6 +67,7 @@ export function AccountForm({
       port: Number(port) || 587,
       secure,
       user: user.trim(),
+      fromEmail: fromEmail.trim() || user.trim(),
       password,
       isDefault,
       dailyLimit: Math.max(0, Math.floor(Number(dailyLimit) || 0)),
@@ -89,7 +91,7 @@ export function AccountForm({
     setTesting(true)
     setFeedback(null)
     try {
-      const result = await onTest(buildInput(), user.trim(), locale)
+      const result = await onTest(buildInput(), fromEmail.trim() || user.trim(), locale)
       const translated = translateSmtpResult(result.code, result.raw, t)
       setFeedback({
         variant: translated.ok ? 'success' : 'error',
@@ -117,6 +119,7 @@ export function AccountForm({
       if (!initial) {
         setName('')
         setUser('')
+        setFromEmail('')
         setPassword('')
         setIsDefault(false)
       }
@@ -197,6 +200,19 @@ export function AccountForm({
           onChange={(e) => setUser(e.target.value)}
           autoComplete="email"
         />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="fromEmail">{t('settings.form.fromEmail')}</Label>
+        <Input
+          id="fromEmail"
+          type="email"
+          placeholder={user.trim() || 'info@ornek.com'}
+          value={fromEmail}
+          onChange={(e) => setFromEmail(e.target.value)}
+          autoComplete="off"
+        />
+        <p className="text-xs text-muted-foreground">{t('settings.form.fromEmailHint')}</p>
       </div>
 
       {showPassword && (
