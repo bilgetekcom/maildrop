@@ -121,7 +121,7 @@ export function registerTemplateHandlers(ipc: IpcMain): void {
     }
     const render = (s: string): string =>
       s.replace(/\{\{\s*([\w]+)\s*\}\}/g, (_, k) => (merged[k] !== undefined ? merged[k] : ''))
-    return { subject: render(tpl.subject), html: render(tpl.bodyHtml) }
+    return { to: email, subject: render(tpl.subject), html: render(tpl.bodyHtml) }
   })
 
   ipc.handle('dialog:openAttachment', async (): Promise<string | null> => {

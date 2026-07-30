@@ -4,6 +4,10 @@
   "version": "v{version} · Open source",
   "openSource": "Open source",
 
+  "emailPreview": {
+    "noTemplate": "Select a template first.",
+    "recipientPager": "Recipient {i}/{n}"
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
@@ -291,6 +295,9 @@
       "estimatedDuration": "Estimated duration",
       "minutes": "{n} minutes",
       "scheduleLabel": "Schedule",
+      "previewButton": "Preview the email to be sent",
+      "previewTitle": "Email to be sent",
+      "previewSubtitle": "This is exactly what this recipient will get (merge fields filled).",
       "doubleCheckTitle": "Please double-check",
       "doubleCheckBody": "You're about to send emails to {count} contacts from {from}. Once started you can pause or cancel, but sent emails cannot be recalled.",
       "unsubWarnTitle": "No unsubscribe method configured",
@@ -357,6 +364,8 @@
       "colEmail": "Email",
       "colError": "Error message",
       "colTime": "Time",
+      "viewEmail": "View sent email",
+      "viewEmailSubtitle": "The rendered email that went to this recipient.",
       "exportSaved": "Report saved:\n{path}"
     }
   },

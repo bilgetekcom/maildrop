@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Send, ArrowRight, ArrowLeft, Users, Mail, Settings, AlertCircle } from 'lucide-react'
+import { Send, ArrowRight, ArrowLeft, Users, Mail, Settings, AlertCircle, Eye } from 'lucide-react'
 import { useSmtpStore } from '../store/smtp'
 import { useTemplatesStore } from '../store/templates'
 import { useCampaignsStore } from '../store/campaigns'
 import { ContactPicker } from '../components/sending/ContactPicker'
 import { TemplatePicker } from '../components/sending/TemplatePicker'
 import { CampaignConsole } from '../components/sending/CampaignConsole'
+import { EmailPreviewDialog } from '../components/sending/EmailPreviewDialog'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
@@ -41,6 +42,7 @@ export function Sending(): JSX.Element {
   const [active, setActive] = useState<Campaign | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [unsubCfg, setUnsubCfg] = useState<UnsubscribeConfig | null>(null)
+  const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
     void refreshSmtp()
@@ -391,6 +393,20 @@ export function Sending(): JSX.Element {
                 )}
               </CardContent>
             </Card>
+
+            <Button variant="outline" className="w-full" onClick={() => setShowPreview(true)}>
+              <Eye className="h-4 w-4" />
+              {t('sending.confirm.previewButton')}
+            </Button>
+
+            <EmailPreviewDialog
+              open={showPreview}
+              onClose={() => setShowPreview(false)}
+              templateId={templateId}
+              contactIds={[...selected]}
+              title={t('sending.confirm.previewTitle')}
+              subtitle={t('sending.confirm.previewSubtitle')}
+            />
 
             <Alert variant="info" title={t('sending.confirm.doubleCheckTitle')}>
               {t('sending.confirm.doubleCheckBody', {

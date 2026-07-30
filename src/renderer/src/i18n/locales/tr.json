@@ -4,6 +4,10 @@
   "version": "v{version} · Açık kaynak",
   "openSource": "Açık kaynak",
 
+  "emailPreview": {
+    "noTemplate": "Önce bir şablon seçin.",
+    "recipientPager": "Alıcı {i}/{n}"
+  },
   "common": {
     "save": "Kaydet",
     "cancel": "İptal",
@@ -291,6 +295,9 @@
       "estimatedDuration": "Tahmini süre",
       "minutes": "{n} dakika",
       "scheduleLabel": "Zamanlama",
+      "previewButton": "Gönderilecek maili önizle",
+      "previewTitle": "Gönderilecek mail",
+      "previewSubtitle": "Bu alıcıya tam olarak böyle gidecek (merge alanları dolduruldu).",
       "doubleCheckTitle": "Lütfen bir kez daha kontrol edin",
       "doubleCheckBody": "{count} kişiye {from} mail göndereceksiniz. Başladıktan sonra duraklatabilir veya iptal edebilirsiniz, ama gönderilmiş mailler geri çağrılamaz.",
       "unsubWarnTitle": "Listeden çıkma seçeneği belirlenmemiş",
@@ -357,6 +364,8 @@
       "colEmail": "E-posta",
       "colError": "Hata mesajı",
       "colTime": "Zaman",
+      "viewEmail": "Gönderilen maili gör",
+      "viewEmailSubtitle": "Bu alıcıya giden mailin render edilmiş hali.",
       "exportSaved": "Rapor kaydedildi:\n{path}"
     }
   },

@@ -70,7 +70,7 @@ const api = {
     update: (id: number, input: Partial<Template>): Promise<Template> =>
       ipcRenderer.invoke('templates:update', id, input),
     remove: (id: number): Promise<void> => ipcRenderer.invoke('templates:remove', id),
-    preview: (id: number, contactId: number): Promise<{ subject: string; html: string }> =>
+    preview: (id: number, contactId: number): Promise<{ to: string; subject: string; html: string }> =>
       ipcRenderer.invoke('templates:preview', id, contactId)
   },
   campaigns: {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Download, ArrowLeft, CheckCircle2, XCircle, Loader2, RotateCw } from 'lucide-react'
+import { Download, ArrowLeft, CheckCircle2, XCircle, Loader2, RotateCw, Eye } from 'lucide-react'
 import type { Campaign, CampaignLog } from '../../../../shared/types'
 import { useCampaignsStore } from '../../store/campaigns'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { EmailPreviewDialog } from '../sending/EmailPreviewDialog'
 import { useT } from '../../i18n'
 import { translateLogMessage } from '../../lib/error-i18n'
 import { useToast } from '../ui/toast'
@@ -20,6 +21,7 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
   const [items, setItems] = useState<CampaignLog[]>([])
   const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all')
   const [loading, setLoading] = useState(true)
+  const [previewContactId, setPreviewContactId] = useState<number | null>(null)
 
   useEffect(() => {
     void (async () => {
@@ -147,6 +149,7 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
                     <th className="px-3 py-2 text-left font-medium">
                       {t('reports.detail.colTime')}
                     </th>
+                    <th className="w-10 px-3 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,6 +169,15 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
                       <td className="px-3 py-2 text-xs text-muted-foreground">
                         {new Date(l.sentAt).toLocaleString()}
                       </td>
+                      <td className="px-3 py-2 text-right">
+                        <button
+                          onClick={() => setPreviewContactId(l.contactId)}
+                          className="text-muted-foreground hover:text-primary"
+                          title={t('reports.detail.viewEmail')}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,6 +186,15 @@ export function CampaignDetail({ campaign, onBack }: CampaignDetailProps): JSX.E
           )}
         </CardContent>
       </Card>
+
+      <EmailPreviewDialog
+        open={previewContactId !== null}
+        onClose={() => setPreviewContactId(null)}
+        templateId={campaign.templateId}
+        contactIds={previewContactId !== null ? [previewContactId] : []}
+        title={t('reports.detail.viewEmail')}
+        subtitle={t('reports.detail.viewEmailSubtitle')}
+      />
     </div>
   )
 }
