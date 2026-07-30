@@ -451,43 +451,44 @@ async function runCampaign(campaignId: number): Promise<void> {
       if (runner.cancelled) break
       if (alreadyProcessed.has(cid)) continue
 
-      // Zaman penceresi kontrolü
+      // Zaman penceresi + hesap uygunlugu BIRLIKTE saglanana kadar bekle.
+      // Hesap beklemesi (gunluk limit dolunca) gece yarisini asar; bu yuzden hesap
+      // musaitlesince pencere TEKRAR kontrol edilmeli. Yoksa limiti dolu kampanya
+      // gunluk sayac sifirlaninca 00:00'da pencere disina 1 mail sizdirir.
+      let selectedAccount: PoolAccount | null = null
       while (!runner.cancelled) {
         const wnd = checkTimeWindow(
           campaign.timeWindowStart,
           campaign.timeWindowEnd,
           campaign.weekdaysOnly
         )
-        if (wnd.allow) break
-        emitProgress({
-          campaignId,
-          sent,
-          failed,
-          total: targetIds.length,
-          currentEmail: null,
-          status: 'paused'
-        })
-        await sleepWithPauseCheck(Math.min(wnd.waitMs, 5 * 60 * 1000))
-      }
-      if (runner.cancelled) break
-
-      // Hesap seçimi (havuz veya tek)
-      let selectedAccount: PoolAccount | null = null
-      while (!runner.cancelled) {
-        const pick = pickAccount(poolIds)
-        if (pick.account) {
-          selectedAccount = pick.account
-          break
+        if (!wnd.allow) {
+          emitProgress({
+            campaignId,
+            sent,
+            failed,
+            total: targetIds.length,
+            currentEmail: null,
+            status: 'paused'
+          })
+          await sleepWithPauseCheck(Math.min(wnd.waitMs, 5 * 60 * 1000))
+          continue
         }
-        emitProgress({
-          campaignId,
-          sent,
-          failed,
-          total: targetIds.length,
-          currentEmail: null,
-          status: 'paused'
-        })
-        await sleepWithPauseCheck(Math.min(pick.waitMs, 5 * 60 * 1000))
+        const pick = pickAccount(poolIds)
+        if (!pick.account) {
+          emitProgress({
+            campaignId,
+            sent,
+            failed,
+            total: targetIds.length,
+            currentEmail: null,
+            status: 'paused'
+          })
+          await sleepWithPauseCheck(Math.min(pick.waitMs, 5 * 60 * 1000))
+          continue
+        }
+        selectedAccount = pick.account
+        break
       }
       if (!selectedAccount || runner.cancelled) break
 
@@ -564,7 +565,13 @@ async function runCampaign(campaignId: number): Promise<void> {
 
     closeAllTransports()
 
-    const finalStatus: Campaign['status'] = runner.cancelled ? 'cancelled' : 'completed'
+    // Hiç gönderim başarılı olmadıysa "completed" değil "failed" olmalı; yoksa
+    // tamamen başarısız bir kampanya "tamamlandı" görünüp kullanıcıyı yanıltır.
+    const finalStatus: Campaign['status'] = runner.cancelled
+      ? 'cancelled'
+      : sent === 0 && failed > 0
+        ? 'failed'
+        : 'completed'
     db.prepare(
       "UPDATE campaigns SET status = ?, finished_at = datetime('now') WHERE id = ?"
     ).run(finalStatus, campaignId)
@@ -602,9 +609,14 @@ async function runCampaign(campaignId: number): Promise<void> {
 export function recoverCampaignsOnStartup(): void {
   const db = getDb()
   try {
-    db.prepare(
-      "UPDATE campaigns SET status = 'cancelled', finished_at = datetime('now') WHERE status IN ('running','paused')"
-    ).run()
+    // Uygulama kapanip acilinca, calisiyor durumundaki kampanyayi IPTAL ETME; kaldigi
+    // yerden DEVAM ETTIR. Gunluk otomatik gonderim (zaman penceresi + gunluk limit)
+    // ancak boyle surdurulebilir. Zaten gonderilenler campaign_logs'tan atlanir.
+    // 'paused' olanlara dokunulmaz: onu kullanici bilerek duraklatmistir.
+    const interrupted = db
+      .prepare<[], { id: number }>("SELECT id FROM campaigns WHERE status = 'running'")
+      .all()
+    for (const row of interrupted) void runCampaign(row.id)
 
     const scheduled = db
       .prepare<[], Record<string, unknown>>(

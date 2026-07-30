@@ -85,36 +85,57 @@ function createWindow(): BrowserWindow {
   return mainWindow
 }
 
-app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.bilgetek.maildrop')
+// Dev (electron-vite) ile paketlenmis surum AYNI userData klasorunu (Roaming/MailDrop)
+// kullansin diye app adini sabitle; yoksa dev'de ad "Electron" olup Roaming/Electron
+// altinda BOS bir DB acilir (SMTP hesabi + kisiler gorunmez). Tek-ornek kilidi de
+// dogru userData'ya baglansin diye whenReady'den ONCE.
+app.setName('MailDrop')
 
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
+// TEK-ORNEK KILIDI: gunluk otomatik gonderim icin Gorev Zamanlayici uygulamayi
+// zaten acikken tetikleyebilir; ikinci ornek ayni SQLite'a yazip veriyi bozardi
+// (bu daha once yasandi). Ikinci ornek acilmaz, var olan pencereye odaklanir.
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    const win = BrowserWindow.getAllWindows()[0]
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
+    }
   })
 
-  initDatabase()
-  recoverCampaignsOnStartup()
+  app.whenReady().then(() => {
+    electronApp.setAppUserModelId('com.bilgetek.maildrop')
 
-  registerSmtpHandlers(ipcMain)
-  registerContactHandlers(ipcMain)
-  registerTemplateHandlers(ipcMain)
-  registerCampaignHandlers(ipcMain)
-  registerReportHandlers(ipcMain)
-  registerSuppressionHandlers(ipcMain)
-  registerAppSettingsHandlers(ipcMain)
-  registerUpdaterHandlers(ipcMain)
-  setupAutoUpdater()
+    app.on('browser-window-created', (_, window) => {
+      optimizer.watchWindowShortcuts(window)
+    })
 
-  ipcMain.handle('app:hasActiveSending', () => hasActiveSendingCampaign())
+    initDatabase()
+    recoverCampaignsOnStartup()
 
-  createWindow()
-  if (!is.dev) startBackgroundCheck()
+    registerSmtpHandlers(ipcMain)
+    registerContactHandlers(ipcMain)
+    registerTemplateHandlers(ipcMain)
+    registerCampaignHandlers(ipcMain)
+    registerReportHandlers(ipcMain)
+    registerSuppressionHandlers(ipcMain)
+    registerAppSettingsHandlers(ipcMain)
+    registerUpdaterHandlers(ipcMain)
+    setupAutoUpdater()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    ipcMain.handle('app:hasActiveSending', () => hasActiveSendingCampaign())
+
+    createWindow()
+    if (!is.dev) startBackgroundCheck()
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
   })
-})
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+  })
+}
